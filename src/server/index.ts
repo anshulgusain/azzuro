@@ -1,4 +1,5 @@
 import { spawn } from 'node:child_process';
+import { timingSafeEqual } from 'node:crypto';
 import { existsSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import express, { type NextFunction, type Request, type Response } from 'express';
@@ -6,7 +7,8 @@ import { askAssistant, sanitizeHistory, type ViewContext } from '../assistant/ag
 import { assistantConfig, friendlyOpenAiError, openAiCreate } from '../assistant/openai.js';
 import { isCollectionRunning } from '../collector/run.js';
 import { openDb } from '../db/database.js';
-import { healthReport, propertyPhotos, queryReviews } from '../db/repository.js';
+import { dataRange, healthReport, listRuns, propertyPhotos, queryReviews } from '../db/repository.js';
+import { SAMPLE_JSON, seedFromSample } from '../db/sample.js';
 import { isValidIsoDate, resolvePeriod, todayLocal, type PeriodPreset } from '../shared/dates.js';
 import { PROPERTIES, bookingUrl, getProperty } from '../shared/properties.js';
 import { CLASSIFIER_VERSION, TOPICS, TOPIC_IDS, type Sentiment, type TopicId } from '../shared/topics.js';
@@ -21,8 +23,52 @@ try {
 }
 
 const db = openDb();
+
+// A brand-new database (e.g. a fresh server) starts with the sample reviews so the dashboard isn't empty.
+if (dataRange(db).total === 0 && existsSync(SAMPLE_JSON)) {
+  const c = seedFromSample(db);
+  console.log(`Empty database: loaded ${c.new} sample reviews from ${SAMPLE_JSON}.`);
+}
+
 const app = express();
 app.disable('x-powered-by');
+app.set('trust proxy', 1); // behind Render's (or any) proxy, so req.ip is the visitor's address
+
+/** For uptime checks (Render's health check). Deliberately outside the password. */
+app.get('/healthz', (_req, res) => {
+  res.json({ ok: true });
+});
+
+/* ---------- Password protection ----------
+   When DASHBOARD_PASSWORD is set, the browser asks for a user name and
+   password before showing anything. Essential on a public address: the chat
+   assistant spends OpenAI credit and "Get latest reviews" starts a browser. */
+const AUTH_USER = process.env.DASHBOARD_USER?.trim() || 'staff';
+const AUTH_PASSWORD = process.env.DASHBOARD_PASSWORD ?? '';
+
+function sameText(a: string, b: string): boolean {
+  const x = Buffer.from(a);
+  const y = Buffer.from(b);
+  return x.length === y.length && timingSafeEqual(x, y);
+}
+
+if (AUTH_PASSWORD) {
+  app.use((req, res, next) => {
+    const [scheme, encoded] = (req.headers.authorization ?? '').split(' ');
+    if (scheme === 'Basic' && encoded) {
+      const decoded = Buffer.from(encoded, 'base64').toString('utf8');
+      const sep = decoded.indexOf(':');
+      if (sep > 0 && sameText(decoded.slice(0, sep), AUTH_USER) && sameText(decoded.slice(sep + 1), AUTH_PASSWORD)) {
+        next();
+        return;
+      }
+    }
+    res.set('WWW-Authenticate', 'Basic realm="Azzurro guest reviews", charset="UTF-8"');
+    res.status(401).send('Please sign in with the staff user name and password.');
+  });
+} else {
+  console.warn('DASHBOARD_PASSWORD is not set: anyone who can reach this address can use the dashboard and the chat assistant.');
+}
 
 const PRESETS: PeriodPreset[] = ['this_week', 'last_week', 'last_4_weeks', 'last_3_months', 'last_12_months', 'custom'];
 
@@ -130,20 +176,43 @@ app.get('/api/health', (_req, res) => {
   res.json(healthReport(db, isCollectionRunning()));
 });
 
+/** Runs the collector as a separate process (its log lines go to this server's log). */
+function startCollection(trigger: string): boolean {
+  if (isCollectionRunning()) return false;
+  const child = spawn(process.execPath, ['--import', 'tsx', resolve('src/collector/cli.ts'), '--trigger', trigger], {
+    cwd: process.cwd(),
+    detached: true,
+    stdio: 'inherit',
+  });
+  child.on('error', (err) => console.error('Could not start the collector:', err.message));
+  child.unref();
+  return true;
+}
+
 /** Starts a collection in the background so staff can refresh data from the dashboard. */
 app.post('/api/collect', (_req, res) => {
-  if (isCollectionRunning()) {
+  if (!startCollection('dashboard')) {
     res.status(409).json({ started: false, message: 'A collection is already running.' });
     return;
   }
-  const child = spawn(process.execPath, ['--import', 'tsx', resolve('src/collector/cli.ts'), '--trigger', 'dashboard'], {
-    cwd: process.cwd(),
-    detached: true,
-    stdio: 'ignore',
-  });
-  child.unref();
   res.status(202).json({ started: true, message: 'Collection started. It usually takes 1–2 minutes.' });
 });
+
+/* Optional automatic updates: set AUTO_COLLECT_HOURS (e.g. 24) to collect whenever the
+   last run is older than that. Checked a minute after start and then every 15 minutes. */
+const autoHours = Number(process.env.AUTO_COLLECT_HOURS ?? 0);
+if (autoHours > 0) {
+  const check = () => {
+    const last = listRuns(db, 1)[0];
+    const lastAt = last ? Date.parse(last.finishedAt ?? last.startedAt) : 0;
+    if (Date.now() - lastAt >= autoHours * 3_600_000 && startCollection('schedule')) {
+      console.log(`Automatic collection started (last run ${last ? `at ${last.startedAt}` : 'never'}).`);
+    }
+  };
+  setTimeout(check, 60_000).unref();
+  setInterval(check, 15 * 60_000).unref();
+  console.log(`Automatic collection every ${autoHours} hour(s) is on.`);
+}
 
 /* ---------- Chat assistant ---------- */
 
@@ -234,7 +303,8 @@ app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
 });
 
 const port = Number(process.env.PORT ?? 8787);
-const server = app.listen(port, () => {
+const host = process.env.HOST ?? '0.0.0.0';
+const server = app.listen(port, host, () => {
   console.log(hasDashboard ? `Dashboard: http://localhost:${port}` : `API on http://localhost:${port} (run the Vite dev server for the dashboard)`);
 });
 server.on('error', (err: NodeJS.ErrnoException) => {

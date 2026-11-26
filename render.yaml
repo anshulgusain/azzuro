@@ -1,0 +1,28 @@
+# Render Blueprint: the full setup with saved data and daily updates.
+# For a free demo instead, see "Deploying to Render" in the README.
+services:
+  - type: web
+    name: azzurro-guest-reviews
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    region: singapore # closest Render region to Sydney
+    plan: 1c-2g # paid: needed for the disk; 2 GB leaves room for the collector's browser
+    healthCheckPath: /healthz
+    autoDeployTrigger: commit
+    disk:
+      name: review-data
+      mountPath: /var/data # the database lives here and survives deploys and restarts
+      sizeGB: 1
+    envVars:
+      - key: REVIEWS_DB
+        value: /var/data/azzurro.db
+      - key: DASHBOARD_USER
+        value: staff
+      - key: DASHBOARD_PASSWORD
+        sync: false # you choose it in the Render dashboard; share it with staff
+      - key: OPENAI_API_KEY
+        sync: false # your OpenAI key, entered in the Render dashboard
+      - key: OPENAI_MODEL
+        value: gpt-5.6-terra
+      - key: AUTO_COLLECT_HOURS
+        value: "24" # fetch the latest reviews once a day

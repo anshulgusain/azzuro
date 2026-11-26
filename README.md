@@ -39,7 +39,7 @@ The sample data (`data/sample/`) means the dashboard works immediately. To fetch
 npm run collect      # visits the four Booking.com pages (about 1 minute)
 ```
 
-If port 8787 is busy: `PORT=8788 npm start`.
+If port 8787 is busy: `PORT=8788 npm start`. Settings (OpenAI key, password, automatic updates) go in a `.env` file: copy `.env.example`.
 
 ### All commands
 
@@ -107,6 +107,8 @@ src/
   web/         React dashboard (Vite)
 scripts/       seed, export-sample, reclassify
 tests/         unit tests + anonymised real Booking.com fixtures
+Dockerfile     container for Render (Node 24 + Chromium)
+render.yaml    Render Blueprint (web service, disk, settings)
 data/sample/   collected sample data (JSON + CSV)
 ```
 
@@ -197,6 +199,44 @@ npm start                 # restart so the key is picked up
 - A typical question takes 2–3 model calls and roughly 5,000–10,000 input tokens. At `gpt-5.6-terra` list prices that is about 2–3 cents per question.
 
 **Testing:** unit tests cover the tools, the agent loop and the input rules (`tests/assistant.test.ts`). The full path (browser, server, official `openai` SDK) was also exercised against a local stand-in for the Responses endpoint. It has not yet been run against the live OpenAI API, because no key was available during development.
+
+## Deploying to Render
+
+The repository includes a `Dockerfile` (Node 24 plus Chromium for the collector) and a `render.yaml` Blueprint. Two ways to deploy:
+
+| | **Free demo** | **Full setup (Blueprint)** |
+|---|---|---|
+| Plan | Free | `1c-2g` (paid) |
+| Data | Sample reviews, reloaded on every start; anything collected is lost when Render restarts the app or it sleeps | Saved on a 1 GB persistent disk |
+| Updates | "Get latest reviews" button (lost on restart) | Automatic once a day, plus the button |
+| Sleeps when idle | Yes, after 15 minutes (about a minute to wake) | No |
+
+**Full setup**
+1. Push the repository to GitHub (already done for this repo).
+2. In Render: **New → Blueprint**, pick the repository. Render reads `render.yaml`.
+3. When asked, enter `DASHBOARD_PASSWORD` (choose one to share with staff) and `OPENAI_API_KEY`. Leave the rest as they are.
+4. Click **Apply**. The first build takes several minutes because it installs Chromium. When it is live, open the `…onrender.com` address and sign in as `staff` with your password.
+
+**Free demo**
+1. In Render: **New → Web Service**, pick the repository. Render detects the `Dockerfile`; choose the **Free** instance type and the **Singapore** region.
+2. Under **Environment**, add `DASHBOARD_PASSWORD` and `OPENAI_API_KEY` (optionally `OPENAI_MODEL`).
+3. Under **Advanced**, set **Health Check Path** to `/healthz`, then **Create Web Service**.
+
+**Settings** (environment variables)
+
+| Variable | Purpose |
+|---|---|
+| `DASHBOARD_PASSWORD` / `DASHBOARD_USER` | Password protection; user defaults to `staff`. **Always set a password on a public address**: without one, anyone can use the dashboard and spend your OpenAI credit through the chat. |
+| `OPENAI_API_KEY`, `OPENAI_MODEL` | Chat assistant (see above). |
+| `REVIEWS_DB` | Database file location; `/var/data/azzurro.db` on the disk in the Blueprint. |
+| `AUTO_COLLECT_HOURS` | Collect automatically when the last run is older than this many hours. |
+| `PORT` | Set by Render (10000). |
+
+Notes:
+- The health check at `/healthz` is the only address that works without the password.
+- A new, empty database loads the sample reviews automatically, so the dashboard is never blank.
+- Collection runs Chromium, which needs memory. The Blueprint uses a 2 GB instance; on 512 MB plans (including Free), collections may fail. The dashboard and chat still work.
+- Booking.com may treat a cloud server's address more strictly than a home or office connection. If collections from Render fail, the *Data status* page will show it. Collecting from an office computer and uploading the database, or using an owner-side export (see next steps), are the fallbacks.
 
 ## Known limitations and assumptions
 

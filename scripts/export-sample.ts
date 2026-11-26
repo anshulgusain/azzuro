@@ -8,7 +8,7 @@ import { dirname } from 'node:path';
 import { openDb } from '../src/db/database.js';
 import { propertyPhotos, queryReviews } from '../src/db/repository.js';
 import { getProperty } from '../src/shared/properties.js';
-import { SAMPLE_CSV, SAMPLE_JSON, type SampleFile } from './sample-format.js';
+import { SAMPLE_CSV, SAMPLE_JSON, type SampleFile } from '../src/db/sample.js';
 
 const db = openDb();
 const { reviews } = queryReviews(db, { sort: 'oldest' });
