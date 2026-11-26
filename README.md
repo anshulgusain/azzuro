@@ -268,4 +268,6 @@ npm test
 
 ## Sample data
 
-`data/sample/reviews.json` (re-loadable with `npm run seed`) and `data/sample/reviews.csv` (for a spreadsheet) hold the 40 reviews and 4 property snapshots collected on 26 Nov 2026, with topic tags and guest names removed. No credentials, cookies or keys are used or stored anywhere in the project.
+`data/sample/reviews.json` (re-loadable with `npm run seed`) and `data/sample/reviews.csv` (for a spreadsheet) hold what was collected from the four Booking.com pages on 26 Nov 2026: 40 reviews (10 per property) with their topic tags, 12 property score snapshots (overall and category scores from three collection runs) and links to each hotel's photos. Guest names are removed.
+
+No credentials, cookies or keys are stored in the repository. The OpenAI key lives only in your local `.env` (git-ignored) or in Render's settings.
