@@ -90,7 +90,9 @@ export function App() {
                 ? 'Collecting new reviews…'
                 : lastRun
                   ? `Last updated ${fmtRelative(lastRun.finishedAt ?? lastRun.startedAt)}`
-                  : 'Not collected yet')}
+                  : meta.data?.totalReviews
+                    ? 'Showing sample data · not refreshed on this computer yet'
+                    : 'No data yet')}
           </span>
           <button className="btn" onClick={refresh} disabled={!!collectMsg || health.data?.collecting} title="Fetch the latest reviews from Booking.com">
             Refresh data
