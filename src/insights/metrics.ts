@@ -86,9 +86,9 @@ export interface InsightContext {
 }
 
 /**
- * Turns the numbers into short sentences an operations manager can act on.
- * Every sentence states its sample size, so a 100% from one review is never
- * presented as a trend.
+ * Turns the numbers into short, plain sentences an operations manager can act
+ * on. Every sentence carries its count ("2 of 5 reviews"), so a 100% from one
+ * review is never presented as a trend.
  */
 export function buildInsights(ctx: InsightContext): Insight[] {
   const out: Insight[] = [];
@@ -99,7 +99,7 @@ export function buildInsights(ctx: InsightContext): Insight[] {
     out.push({
       kind: 'no_data',
       tone: 'neutral',
-      text: `No reviews${where} ${periodLabel} yet.${ctx.lastReviewDate ? ` The most recent review in the data is from ${formatDay(ctx.lastReviewDate)}.` : ''}`,
+      text: `No reviews${where} ${periodLabel} yet.${ctx.lastReviewDate ? ` The latest review is from ${formatDay(ctx.lastReviewDate)}.` : ''}`,
     });
     return out;
   }
@@ -110,26 +110,26 @@ export function buildInsights(ctx: InsightContext): Insight[] {
     const tone = Math.abs(delta) < 0.3 ? 'neutral' : delta > 0 ? 'good' : 'bad';
     const movement =
       tone === 'neutral'
-        ? `in line with ${previousLabel} (${prev.avgScore.toFixed(1)})`
-        : `${delta > 0 ? 'up' : 'down'} ${Math.abs(delta).toFixed(1)} on ${previousLabel} (${prev.avgScore.toFixed(1)})`;
+        ? `about the same as ${previousLabel} (${prev.avgScore.toFixed(1)})`
+        : `${delta > 0 ? 'up' : 'down'} from ${prev.avgScore.toFixed(1)} ${previousLabel}`;
     out.push({
       kind: 'rating_change',
       tone,
-      text: `Average rating${where} ${periodLabel} is ${cur.avgScore.toFixed(1)} from ${plural(cur.count, 'review')}, ${movement}.`,
+      text: `Average rating${where} ${periodLabel}: ${cur.avgScore.toFixed(1)} out of 10 from ${plural(cur.count, 'review')}, ${movement}.`,
     });
   } else if (cur.avgScore !== null) {
     out.push({
       kind: 'rating_change',
       tone: 'neutral',
-      text: `Average rating${where} ${periodLabel} is ${cur.avgScore.toFixed(1)} from ${plural(cur.count, 'review')}. There were no reviews ${previousLabel} to compare with.`,
+      text: `Average rating${where} ${periodLabel}: ${cur.avgScore.toFixed(1)} out of 10 from ${plural(cur.count, 'review')}. No reviews ${previousLabel} to compare with.`,
     });
   }
 
-  // 2. What negative reviews are about
+  // 2. What bad reviews are about
   const negatives = ctx.current.filter((r) => r.sentiment === 'negative');
   const negativesWithText = negatives.filter((r) => r.textQuality === 'ok' || r.textQuality === 'misplaced_praise');
   if (negatives.length === 0) {
-    out.push({ kind: 'top_issue', tone: 'good', text: `No negative reviews (scored 5 or below)${where} ${periodLabel}.` });
+    out.push({ kind: 'top_issue', tone: 'good', text: `No bad reviews (5 out of 10 or lower)${where} ${periodLabel}.` });
   } else {
     const ranked = [...ctx.topics].filter((t) => t.negativeReviewsMentioning > 0).sort((a, b) => b.negativeReviewsMentioning - a.negativeReviewsMentioning);
     const top = ranked[0];
@@ -138,13 +138,13 @@ export function buildInsights(ctx: InsightContext): Insight[] {
         kind: 'top_issue',
         tone: 'bad',
         topic: top.topic,
-        text: `${pct(top.negativeReviewsMentioning, negativesWithText.length)}% of negative reviews${where} ${periodLabel} mentioned ${topicLabel(top.topic).toLowerCase()} issues (${top.negativeReviewsMentioning} of ${negativesWithText.length} with comments).`,
+        text: `${pct(top.negativeReviewsMentioning, negativesWithText.length)}% of bad reviews${where} ${periodLabel} mention ${topicLabel(top.topic).toLowerCase()} (${top.negativeReviewsMentioning} of ${negativesWithText.length}).`,
       });
     } else {
       out.push({
         kind: 'top_issue',
         tone: 'bad',
-        text: `${plural(negatives.length, 'negative review')}${where} ${periodLabel}, but none gave comments we could classify.`,
+        text: `${plural(negatives.length, 'bad review')}${where} ${periodLabel}, without comments we could sort into topics.`,
       });
     }
   }
@@ -157,7 +157,7 @@ export function buildInsights(ctx: InsightContext): Insight[] {
       kind: 'top_issue',
       tone: 'bad',
       topic: topAll.topic,
-      text: `Most common complaint${where} ${periodLabel}: ${topicLabel(topAll.topic).toLowerCase()}, raised in ${topAll.complaints} of ${withText.length} reviews with comments (${pct(topAll.complaints, withText.length)}%).`,
+      text: `Most common complaint${where} ${periodLabel}: ${topicLabel(topAll.topic).toLowerCase()} (${topAll.complaints} of ${plural(withText.length, 'review')}).`,
     });
   }
 
@@ -171,7 +171,7 @@ export function buildInsights(ctx: InsightContext): Insight[] {
       kind: 'rising_issue',
       tone: 'bad',
       topic: t.topic,
-      text: `${topicLabel(t.topic)} complaints rose from ${t.previousComplaints} ${previousLabel} to ${t.complaints} ${periodLabel}.`,
+      text: `More ${topicLabel(t.topic).toLowerCase()} complaints: ${t.complaints} ${periodLabel}, up from ${t.previousComplaints} ${previousLabel}.`,
     });
   }
 
@@ -183,7 +183,7 @@ export function buildInsights(ctx: InsightContext): Insight[] {
       kind: 'property_watch',
       tone: lowest.stats.avgScore! < 7.5 ? 'bad' : 'neutral',
       propertyId: lowest.propertyId,
-      text: `${lowest.name} had the lowest average ${periodLabel}: ${lowest.stats.avgScore!.toFixed(1)} from ${plural(lowest.stats.count, 'review')}.`,
+      text: `Lowest rated hotel ${periodLabel}: ${lowest.name}, ${lowest.stats.avgScore!.toFixed(1)} out of 10 (${plural(lowest.stats.count, 'review')}).`,
     });
   }
 
@@ -194,7 +194,7 @@ export function buildInsights(ctx: InsightContext): Insight[] {
       kind: 'praise',
       tone: 'good',
       topic: topPraise.topic,
-      text: `Most praised${where} ${periodLabel}: ${topicLabel(topPraise.topic).toLowerCase()}, mentioned positively in ${pct(topPraise.praise, withText.length)}% of reviews with comments.`,
+      text: `Guests praise ${topicLabel(topPraise.topic).toLowerCase()} the most (${topPraise.praise} of ${plural(withText.length, 'review')}).`,
     });
   }
 
@@ -203,7 +203,7 @@ export function buildInsights(ctx: InsightContext): Insight[] {
     out.push({
       kind: 'low_sample',
       tone: 'neutral',
-      text: `Only ${plural(cur.count, 'review')} ${periodLabel}, so one review can move these figures a lot. Try a longer period for a steadier picture.`,
+      text: `Only ${plural(cur.count, 'review')} ${periodLabel}, so one review can change the numbers a lot. Pick a longer time period for a steadier picture.`,
     });
   }
   return out;
@@ -229,24 +229,20 @@ export function benchmarkInsight(properties: Array<{ name: string; categories: C
     }
   }
   if (!below.size) {
-    return { kind: 'benchmark', tone: 'good', text: "Every Booking.com category score is within or above the range for comparable Sydney properties (all-time)." };
+    return { kind: 'benchmark', tone: 'good', text: 'Booking.com scores us as well as or better than similar Sydney hotels in every area.' };
   }
   const list = (xs: string[]) => (xs.length === 1 ? xs[0] : `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}`);
   if (withData.length === 1) {
     return {
       kind: 'benchmark',
       tone: 'bad',
-      text: `Booking.com rates ${withData[0].name} below the range for comparable Sydney properties on ${list([...below.keys()].map((k) => k.toLowerCase()))} (all-time score from every review).`,
+      text: `Booking.com scores ${withData[0].name} lower than similar Sydney hotels for ${list([...below.keys()].map((k) => k.toLowerCase()))}.`,
     };
   }
   const everywhere = [...below].filter(([, names]) => names.length === withData.length).map(([k]) => k.toLowerCase());
-  const some = [...below].filter(([, names]) => names.length < withData.length);
-  const parts: string[] = [];
-  if (everywhere.length) parts.push(`${list(everywhere)} ${everywhere.length === 1 ? 'is' : 'are'} below the Sydney range at all ${withData.length} properties`);
-  if (some.length) parts.push(`${list(some.map(([k]) => k.toLowerCase()))} at some`);
-  return {
-    kind: 'benchmark',
-    tone: 'bad',
-    text: `Booking.com's category scores: ${parts.join('; ')}. These are all-time scores from every review, so they are the most reliable comparison here.`,
-  };
+  const some = [...below].filter(([, names]) => names.length < withData.length).map(([k]) => k.toLowerCase());
+  const text = everywhere.length
+    ? `Booking.com scores all ${withData.length} hotels lower than similar Sydney hotels for ${list(everywhere)}${some.length ? ` (and some hotels for ${list(some)})` : ''}.`
+    : `Booking.com scores some of our hotels lower than similar Sydney hotels for ${list(some)}.`;
+  return { kind: 'benchmark', tone: 'bad', text };
 }

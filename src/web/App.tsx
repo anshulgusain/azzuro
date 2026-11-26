@@ -1,22 +1,22 @@
 import { useState } from 'react';
 import { PERIOD_LABELS, type PeriodPreset } from '../shared/dates';
-import { CoverageBanner } from './components/CoverageBanner';
-import { Health } from './components/Health';
-import { Overview } from './components/Overview';
-import { Reviews } from './components/Reviews';
-import { Topics } from './components/Topics';
-import { ErrorBox } from './components/ui';
+import { DataStatus } from './components/DataStatus';
+import { LimitedDataNote } from './components/LimitedDataNote';
+import { Problems } from './components/Problems';
+import { ReviewFeed } from './components/ReviewFeed';
+import { Summary } from './components/Summary';
+import { ErrorBox, Icon } from './components/ui';
 import { api, type Scope } from './lib/api';
 import { fmtRange, fmtRelative } from './lib/format';
 import { useData, useUrlState } from './lib/hooks';
 
 const PRESETS: PeriodPreset[] = ['this_week', 'last_week', 'last_4_weeks', 'last_3_months', 'last_12_months', 'custom'];
-type Tab = 'overview' | 'reviews' | 'topics' | 'health';
-const TABS: Array<{ id: Tab; label: string }> = [
-  { id: 'overview', label: 'Overview' },
-  { id: 'reviews', label: 'Reviews' },
-  { id: 'topics', label: 'Topics' },
-  { id: 'health', label: 'Data & sources' },
+
+type Tab = 'summary' | 'reviews' | 'problems' | 'data';
+const MAIN_TABS: Array<{ id: Tab; label: string; icon: string; hint: string }> = [
+  { id: 'summary', label: 'Summary', icon: 'summary', hint: 'How are we doing?' },
+  { id: 'reviews', label: 'Read reviews', icon: 'reviews', hint: 'What guests wrote' },
+  { id: 'problems', label: 'Complaints & praise', icon: 'problems', hint: 'What to fix, what to keep' },
 ];
 
 export interface ReviewFilters {
@@ -29,7 +29,7 @@ export interface ReviewFilters {
 
 export function App() {
   const [state, setState] = useUrlState({
-    tab: 'overview',
+    tab: 'summary',
     property: 'all',
     period: 'this_week',
     from: '',
@@ -46,24 +46,26 @@ export function App() {
   const meta = useData(() => api.meta(), []);
   const summary = useData(() => api.summary(scope), [scopeKey]);
   const health = useData(() => api.health(), []);
-  const [collectMsg, setCollectMsg] = useState<string | null>(null);
+  const [refreshMsg, setRefreshMsg] = useState<string | null>(null);
 
   const customInvalid = state.period === 'custom' && (!state.from || !state.to || state.from > state.to);
   const lastRun = health.data?.runs[0];
+  const hotels = meta.data?.properties ?? [];
 
-  const openReviews = (patch: Partial<ReviewFilters>) =>
+  const openReviews = (patch: Partial<ReviewFilters>) => {
     setState({ tab: 'reviews', sentiment: '', topic: '', polarity: '', q: '', ...patch });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   async function refresh() {
     const res = await api.collect();
-    setCollectMsg(res.message);
-    // Poll the run log until the collection finishes, then reload everything.
+    setRefreshMsg(res.started ? 'Getting the latest reviews… this takes about a minute.' : res.message);
     const started = Date.now();
     const timer = setInterval(async () => {
       const h = await api.health().catch(() => null);
       if ((h && !h.collecting && Date.now() - started > 5_000) || Date.now() - started > 10 * 60_000) {
         clearInterval(timer);
-        setCollectMsg(null);
+        setRefreshMsg(null);
         health.reload();
         summary.reload();
         meta.reload();
@@ -71,117 +73,145 @@ export function App() {
     }, 4_000);
   }
 
+  const freshness =
+    refreshMsg ??
+    (health.data?.collecting
+      ? 'Getting the latest reviews…'
+      : lastRun
+        ? `Updated ${fmtRelative(lastRun.finishedAt ?? lastRun.startedAt)}`
+        : meta.data?.totalReviews
+          ? 'Showing sample data'
+          : 'No reviews yet');
+
   return (
-    <div className="app">
-      <header className="topbar">
-        <div className="brand">
-          <div className="brand-mark" aria-hidden="true">
-            A
+    <>
+      <header className="masthead">
+        <div className="wrap masthead-inner">
+          <div className="brand">
+            <div className="logo" aria-hidden="true">
+              <Icon name="hotel" size={22} />
+            </div>
+            <div>
+              <div className="brand-name">Azzurro Hotels</div>
+              <div className="brand-sub">Guest reviews from Booking.com</div>
+            </div>
           </div>
-          <div>
-            <h1>Guest Review Insights</h1>
-            <p>Azzurro Hotels · Booking.com reviews</p>
+          <div className="masthead-actions">
+            <span className="updated" aria-live="polite">
+              {freshness}
+            </span>
+            <button className="btn btn-on-dark" onClick={refresh} disabled={!!refreshMsg || health.data?.collecting}>
+              <Icon name="refresh" size={16} /> Get latest reviews
+            </button>
           </div>
-        </div>
-        <div className="freshness">
-          <span>
-            {collectMsg ??
-              (health.data?.collecting
-                ? 'Collecting new reviews…'
-                : lastRun
-                  ? `Last updated ${fmtRelative(lastRun.finishedAt ?? lastRun.startedAt)}`
-                  : meta.data?.totalReviews
-                    ? 'Showing sample data · not refreshed on this computer yet'
-                    : 'No data yet')}
-          </span>
-          <button className="btn" onClick={refresh} disabled={!!collectMsg || health.data?.collecting} title="Fetch the latest reviews from Booking.com">
-            Refresh data
-          </button>
         </div>
       </header>
 
-      <div className="filters" role="search" aria-label="Filters for every view">
-        <label className="field">
-          <span>Property</span>
-          <select value={state.property} onChange={(e) => setState({ property: e.target.value })}>
-            <option value="all">All properties</option>
-            {meta.data?.properties.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name}
-              </option>
-            ))}
-          </select>
-        </label>
-        <div className="field">
-          <span id="period-label">Period</span>
-          <div className="segmented" role="group" aria-labelledby="period-label">
-            {PRESETS.map((p) => (
-              <button
-                key={p}
-                aria-pressed={state.period === p}
-                onClick={() =>
-                  setState(
-                    p === 'custom' && !state.from && summary.data
-                      ? { period: p, from: summary.data.period.current.from, to: summary.data.period.current.to }
-                      : { period: p },
-                  )
-                }
-              >
-                {PERIOD_LABELS[p]}
+      <div className="wrap">
+        <section className="filters" aria-label="Choose hotel and time period">
+          <div className="filter-row">
+            <span className="filter-label" id="hotel-label">
+              Hotel
+            </span>
+            <div className="choice-group" role="group" aria-labelledby="hotel-label">
+              <button className="choice" aria-pressed={state.property === 'all'} onClick={() => setState({ property: 'all' })}>
+                All hotels
               </button>
-            ))}
+              {hotels.map((p) => (
+                <button key={p.id} className="choice" aria-pressed={state.property === p.id} onClick={() => setState({ property: p.id })}>
+                  {p.name}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
-        {state.period === 'custom' && (
-          <div className="field">
-            <input type="date" aria-label="From" value={state.from} max={state.to || undefined} onChange={(e) => setState({ from: e.target.value })} />
-            <span>to</span>
-            <input type="date" aria-label="To" value={state.to} min={state.from || undefined} onChange={(e) => setState({ to: e.target.value })} />
+          <div className="filter-row">
+            <span className="filter-label" id="time-label">
+              Time
+            </span>
+            <div className="choice-group" role="group" aria-labelledby="time-label">
+              {PRESETS.map((p) => (
+                <button
+                  key={p}
+                  className="choice"
+                  aria-pressed={state.period === p}
+                  onClick={() =>
+                    setState(
+                      p === 'custom' && !state.from && summary.data
+                        ? { period: p, from: summary.data.period.current.from, to: summary.data.period.current.to }
+                        : { period: p },
+                    )
+                  }
+                >
+                  {p === 'custom' ? 'Pick dates' : PERIOD_LABELS[p]}
+                </button>
+              ))}
+            </div>
           </div>
-        )}
-        {summary.data && !customInvalid && (
-          <span className="small muted">
-            {fmtRange(summary.data.period.current.from, summary.data.period.current.to)}
-            {summary.data.period.inProgress ? ' (so far)' : ''} · compared with {summary.data.period.previousLabel}
-          </span>
-        )}
-      </div>
+          {state.period === 'custom' && (
+            <div className="filter-row">
+              <span className="filter-label">Dates</span>
+              <div className="date-pickers">
+                <label>
+                  From <input type="date" value={state.from} max={state.to || undefined} onChange={(e) => setState({ from: e.target.value })} />
+                </label>
+                <label>
+                  to <input type="date" value={state.to} min={state.from || undefined} onChange={(e) => setState({ to: e.target.value })} />
+                </label>
+              </div>
+            </div>
+          )}
+          {summary.data && !customInvalid && (
+            <p className="filter-summary">
+              Showing <strong>{fmtRange(summary.data.period.current.from, summary.data.period.current.to)}</strong>
+              {summary.data.period.inProgress ? ' (so far)' : ''}, compared with {summary.data.period.previousLabel}.
+            </p>
+          )}
+        </section>
 
-      {summary.data && <CoverageBanner coverage={summary.data.coverage} onDetails={() => setState({ tab: 'health' })} />}
+        {summary.data && <LimitedDataNote coverage={summary.data.coverage} onMore={() => setState({ tab: 'data' })} />}
 
-      <nav className="tabs" role="tablist" aria-label="Views">
-        {TABS.map((t) => (
-          <button key={t.id} role="tab" aria-selected={state.tab === t.id} onClick={() => setState({ tab: t.id })}>
-            {t.label}
-            {t.id === 'reviews' && summary.data ? <span className="count">{summary.data.current.count}</span> : null}
+        <nav className="tabs" role="tablist" aria-label="Pages">
+          {MAIN_TABS.map((t) => (
+            <button key={t.id} role="tab" className="tab" aria-selected={state.tab === t.id} onClick={() => setState({ tab: t.id })}>
+              <Icon name={t.icon} size={20} />
+              <span>
+                <span className="tab-label">
+                  {t.label}
+                  {t.id === 'reviews' && summary.data ? <span className="tab-count">{summary.data.current.count}</span> : null}
+                </span>
+                <span className="tab-hint">{t.hint}</span>
+              </span>
+            </button>
+          ))}
+        </nav>
+
+        <main>
+          {customInvalid ? (
+            <ErrorBox message="Choose a start date and an end date (the start must be before the end)." />
+          ) : state.tab === 'reviews' ? (
+            <ReviewFeed
+              scope={scope}
+              scopeKey={scopeKey}
+              meta={meta.data}
+              filters={{ sentiment: state.sentiment, topic: state.topic, polarity: state.polarity, q: state.q, sort: state.sort }}
+              onFilters={(f) => setState(f)}
+            />
+          ) : state.tab === 'problems' ? (
+            <Problems summary={summary} meta={meta.data} onOpenReviews={openReviews} />
+          ) : state.tab === 'data' ? (
+            <DataStatus health={health} onBack={() => setState({ tab: 'summary' })} />
+          ) : (
+            <Summary summary={summary} scope={scope} scopeKey={scopeKey} onHotel={(id) => setState({ property: id })} onOpenReviews={openReviews} />
+          )}
+        </main>
+
+        <footer className="footer">
+          <span>Weeks run Monday to Sunday, Sydney time.</span>
+          <button className="link" onClick={() => setState({ tab: 'data' })}>
+            <Icon name="data" size={14} /> Data status and how this works
           </button>
-        ))}
-      </nav>
-
-      <main>
-        {customInvalid ? (
-          <ErrorBox message="Choose a start and end date (the start must be on or before the end)." />
-        ) : state.tab === 'overview' ? (
-          <Overview summary={summary} scope={scope} scopeKey={scopeKey} onProperty={(id) => setState({ property: id })} onOpenReviews={openReviews} />
-        ) : state.tab === 'reviews' ? (
-          <Reviews
-            scope={scope}
-            scopeKey={scopeKey}
-            meta={meta.data}
-            filters={{ sentiment: state.sentiment, topic: state.topic, polarity: state.polarity, q: state.q, sort: state.sort }}
-            onFilters={(f) => setState(f)}
-          />
-        ) : state.tab === 'topics' ? (
-          <Topics summary={summary} meta={meta.data} onOpenReviews={openReviews} />
-        ) : (
-          <Health health={health} />
-        )}
-      </main>
-
-      <footer>
-        Reviews are public Booking.com guest reviews. Weeks run Monday to Sunday, Sydney time. Topic tags come from keyword rules ({meta.data?.classifierVersion ?? '…'}) – see
-        the Topics tab for how they work.
-      </footer>
-    </div>
+        </footer>
+      </div>
+    </>
   );
 }

@@ -81,16 +81,16 @@ describe('buildInsights', () => {
   const texts = insights.map((i) => i.text);
 
   it('reports the rating change with the comparison value', () => {
-    expect(texts[0]).toBe('Average rating this week is 4.6 from 5 reviews, down 3.9 on last week (8.5).');
+    expect(texts[0]).toBe('Average rating this week: 4.6 out of 10 from 5 reviews, down from 8.5 last week.');
   });
 
   it('states what share of negative reviews mention the top issue, with counts', () => {
     // 4 negative reviews: cleanliness in 2, noise in 2; ties resolve to taxonomy order
-    expect(texts).toContain('50% of negative reviews this week mentioned cleanliness issues (2 of 4 with comments).');
+    expect(texts).toContain('50% of bad reviews this week mention cleanliness (2 of 4).');
   });
 
   it('flags issues that are growing', () => {
-    expect(insights.find((i) => i.kind === 'rising_issue' && i.topic === 'noise')?.text).toBe('Noise complaints rose from 0 last week to 3 this week.');
+    expect(insights.find((i) => i.kind === 'rising_issue' && i.topic === 'noise')?.text).toBe('More noise complaints: 3 this week, up from 0 last week.');
   });
 
   it('warns when the sample is small', () => {
@@ -123,7 +123,7 @@ describe('buildInsights', () => {
       lastReviewDate: '2026-11-20',
       scopeLabel: 'Potts Point',
     });
-    expect(none).toEqual([{ kind: 'no_data', tone: 'neutral', text: 'No reviews at Potts Point this week yet. The most recent review in the data is from 20 Nov 2026.' }]);
+    expect(none).toEqual([{ kind: 'no_data', tone: 'neutral', text: 'No reviews at Potts Point this week yet. The latest review is from 20 Nov 2026.' }]);
   });
 });
 
@@ -134,9 +134,9 @@ describe('benchmarkInsight', () => {
       { name: 'A', categories: [cat('Cleanliness', 6.5), cat('Staff', 6.9)] },
       { name: 'B', categories: [cat('Cleanliness', 6.8), cat('Staff', 8)] },
     ]);
-    expect(i?.text).toContain('cleanliness is below the Sydney range at all 2 properties; staff at some');
+    expect(i?.text).toBe('Booking.com scores all 2 hotels lower than similar Sydney hotels for cleanliness (and some hotels for staff).');
   });
   it('names the categories for a single property', () => {
-    expect(benchmarkInsight([{ name: 'A', categories: [cat('Facilities', 6), cat('Location', 8)] }])?.text).toContain('A below the range for comparable Sydney properties on facilities');
+    expect(benchmarkInsight([{ name: 'A', categories: [cat('Facilities', 6), cat('Location', 8)] }])?.text).toBe('Booking.com scores A lower than similar Sydney hotels for facilities.');
   });
 });

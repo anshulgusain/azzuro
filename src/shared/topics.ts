@@ -179,7 +179,7 @@ export function sentimentForScore(score: number): Sentiment {
 }
 
 export const SENTIMENT_LABELS: Record<Sentiment, string> = {
-  positive: 'Positive (8–10)',
-  neutral: 'Mixed (6–7)',
-  negative: 'Negative (1–5)',
+  positive: 'Good (8–10)',
+  neutral: 'Okay (6–7)',
+  negative: 'Bad (1–5)',
 };

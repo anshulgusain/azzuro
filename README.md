@@ -9,7 +9,9 @@ Collects public Booking.com guest reviews for four Azzurro Hotels properties and
 | Central Sydney | [venus-surry-hills](https://www.booking.com/hotel/au/venus-surry-hills.html) |
 | Darling Harbour | [chateau-de-venus](https://www.booking.com/hotel/au/chateau-de-venus.html) |
 
-![Overview tab](docs/screenshots/overview.png)
+![Summary page](docs/screenshots/summary.png)
+
+The dashboard is built for front-desk and operations staff rather than analysts: one big rating with a plain word ("Very good", "Poor"), short key points, a card per hotel, "Top complaints" next to "What guests love", and reviews split into *Liked* and *Didn't like*. Every page has a **Get latest reviews** button. Colour is always paired with an icon or a word.
 
 > **Read this first: data coverage.** Booking.com recognises automated browsers and refuses them the full review list. What it does serve is each property's overall score, its category scores (with a benchmark range for similar Sydney properties) and the ~10 reviews it features on each page. Those featured reviews are picked from high scores, so the collected sample (40 reviews) averages about 9/10 while Booking.com's real scores are 6.2–6.6. The dashboard says this on every page and leans on the category scores, which are built from all ~9,300 reviews. See [Known limitations](#known-limitations-and-assumptions) and [Recommended next steps](#recommended-next-steps).
 
@@ -108,7 +110,7 @@ data/sample/   collected sample data (JSON + CSV)
 | `reviews` | One row per Booking.com review. Primary key is Booking's own review key (`bkg:<reviewUrl>`), so the same review seen in many runs is stored once. Stores score, title, liked/disliked text, language, review date (UTC and Sydney calendar date), stay month, nights, room, traveller type, country, hotel reply, a content hash, and the text-quality flag. |
 | `review_topics` | Topic tags per review: topic, `complaint`/`praise`, and the exact words that triggered it. |
 | `property_snapshots` | Booking.com's overall score, review count and category scores at every run, so score movement is kept over time. |
-| `collection_runs`, `collection_run_items` | Every run, per property: status, attempts, new/updated/rejected counts, full-list outcome and errors. Shown on the *Data & sources* tab. |
+| `collection_runs`, `collection_run_items` | Every run, per property: status, attempts, new/updated/rejected counts, full-list outcome and errors. Shown on the *Data status* page (link at the bottom of the dashboard). |
 
 ---
 
@@ -143,7 +145,7 @@ During development this already caught a real problem: Central Sydney's page str
 
 **Sentiment comes from the guest's score**, not from text analysis: 8–10 positive, 6–7 mixed, 1–5 negative. The guest's own number is more reliable than inferred tone.
 
-**Topics come from keyword rules on Booking's two questions.** Booking asks what the guest *liked* and *disliked*. A topic word found in the disliked answer is a **complaint**, in the liked answer it's **praise**. This sidesteps the biggest weakness of generic sentiment models on hotel reviews ("great location but noisy" is one sentence with two polarities). Eight topics: Cleanliness, Check-in & check-out, Staff & reception, Noise, Facilities & amenities, Location, Room condition & comfort, Value for money. The word lists are in [`src/shared/topics.ts`](src/shared/topics.ts), shown in the Topics tab, and the review feed highlights the words that triggered each tag.
+**Topics come from keyword rules on Booking's two questions.** Booking asks what the guest *liked* and *disliked*. A topic word found in the disliked answer is a **complaint**, in the liked answer it's **praise**. This sidesteps the biggest weakness of generic sentiment models on hotel reviews ("great location but noisy" is one sentence with two polarities). Eight topics: Cleanliness, Check-in & check-out, Staff & reception, Noise, Facilities & amenities, Location, Room condition & comfort, Value for money. The word lists are in [`src/shared/topics.ts`](src/shared/topics.ts), listed on the *Complaints & praise* page, and hovering a topic label on a review shows the words that triggered it.
 
 Data-quality rules, each based on cases in the real reviews:
 
@@ -156,13 +158,13 @@ Data-quality rules, each based on cases in the real reviews:
 
 **Why keywords and not an AI model?** For a first version operations staff can trust, explainability matters most: every tag can be traced to a word, staff can suggest new words, results are deterministic and free to run. The trade-offs are the [limitations](#known-limitations-and-assumptions) below. Classification sits behind one function (`classifyReview`) with a version stamp, so an LLM classifier can be swapped in or run alongside later.
 
-![Topics tab](docs/screenshots/topics.png)
+![Complaints & praise page](docs/screenshots/complaints-praise.png)
 
 ---
 
 ## Known limitations and assumptions
 
-- **Coverage is small and biased (the big one).** Only Booking.com's featured reviews are available to the collector: about 10 per property, <1% of all reviews, chosen from high scores. Ratings computed from them overstate satisfaction, and "negative reviews" will almost never appear. Complaints within them are still real. The dashboard shows a coverage banner everywhere and a coverage table on the *Data & sources* tab.
+- **Coverage is small and biased (the big one).** Only Booking.com's featured reviews are available to the collector: about 10 per property, <1% of all reviews, chosen from high scores. Ratings computed from them overstate satisfaction, and "negative reviews" will almost never appear. Complaints within them are still real. The dashboard shows a "Limited data" notice on every page and a coverage table on the *Data status* page.
 - **Full review list code is untested against a live success.** The paging path and the review-card parser are written against the field names the site's review list uses, are tolerant of missing fields, and are unit-tested with an illustrative response, but Booking.com never returned a successful list during development.
 - **Booking.com's terms** restrict automated access. This collector reads public pages at low volume and does not evade bot detection, but before relying on it in production the team should confirm the approach with Booking.com or use an owner-side source (below).
 - **Keyword limits:** misses sarcasm, typos and unusual wording, and can tag a word used in another sense (e.g. "after I checked out" tagged as check-in). Every tag shows its trigger words so these are visible.
