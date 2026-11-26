@@ -45,6 +45,13 @@ export interface Review {
   firstSeenAt: string;
 }
 
+/** A hotel photo as published on its Booking.com page (links only; images are not copied). */
+export interface HotelPhoto {
+  url: string; // up to 1024x768
+  thumbUrl: string; // up to 500px
+  alt: string | null;
+}
+
 export interface PropertySummary {
   id: string;
   name: string;
@@ -58,6 +65,7 @@ export interface PropertySummary {
   topComplaint: { topic: TopicId; count: number } | null;
   categories: CategoryScore[];
   lastCollectedAt: string | null;
+  photo: HotelPhoto | null;
 }
 
 export interface CategoryScore {
@@ -188,7 +196,7 @@ export interface HealthResponse {
 }
 
 export interface MetaResponse {
-  properties: Array<{ id: string; name: string; bookingUrl: string }>;
+  properties: Array<{ id: string; name: string; bookingUrl: string; photo: HotelPhoto | null; photos: HotelPhoto[] }>;
   topics: Array<{ id: TopicId; label: string; description: string; terms: string[] }>;
   today: IsoDate;
   dataRange: { from: IsoDate | null; to: IsoDate | null };

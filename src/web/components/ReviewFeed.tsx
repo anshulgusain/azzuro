@@ -68,6 +68,7 @@ export function ReviewFeed({ scope, scopeKey, meta, filters, onFilters }: Props)
   }, [key, page]);
 
   const hotelName = (id: string) => meta?.properties.find((p) => p.id === id)?.name ?? id;
+  const hotelThumb = (id: string) => meta?.properties.find((p) => p.id === id)?.photo?.thumbUrl ?? null;
   const anyFilter = filters.sentiment || filters.topic || filters.q;
 
   return (
@@ -144,7 +145,13 @@ export function ReviewFeed({ scope, scopeKey, meta, filters, onFilters }: Props)
 
       <div className={`review-list${loading && page === 1 ? ' is-loading' : ''}`}>
         {items.map((r) => (
-          <ReviewCard key={r.id} review={r} hotel={hotelName(r.propertyId)} onTopic={(topic, polarity) => onFilters({ topic, polarity })} />
+          <ReviewCard
+            key={r.id}
+            review={r}
+            hotel={hotelName(r.propertyId)}
+            thumb={hotelThumb(r.propertyId)}
+            onTopic={(topic, polarity) => onFilters({ topic, polarity })}
+          />
         ))}
       </div>
 
@@ -159,7 +166,17 @@ export function ReviewFeed({ scope, scopeKey, meta, filters, onFilters }: Props)
   );
 }
 
-function ReviewCard({ review: r, hotel, onTopic }: { review: Review; hotel: string; onTopic: (topic: string, polarity: string) => void }) {
+function ReviewCard({
+  review: r,
+  hotel,
+  thumb,
+  onTopic,
+}: {
+  review: Review;
+  hotel: string;
+  thumb: string | null;
+  onTopic: (topic: string, polarity: string) => void;
+}) {
   const tone = ratingTone(r.score);
   // Guests sometimes type just "-" or "." to skip a question; that isn't worth a box.
   const disliked = r.negativeText && /[\p{L}\p{N}]/u.test(r.negativeText) ? r.negativeText : null;
@@ -181,6 +198,7 @@ function ReviewCard({ review: r, hotel, onTopic }: { review: Review; hotel: stri
       </div>
       <div className="review-main">
         <p className="review-head">
+          {thumb && <img className="review-thumb" src={thumb} alt="" loading="lazy" onError={(e) => (e.currentTarget.style.display = 'none')} />}
           <strong>{hotel}</strong>
           <span className="dot-sep" aria-hidden="true">
             ·

@@ -5,7 +5,7 @@
  */
 import { existsSync, readFileSync } from 'node:fs';
 import { openDb } from '../src/db/database.js';
-import { addSnapshot, upsertReview } from '../src/db/repository.js';
+import { addSnapshot, setPropertyPhotos, upsertReview } from '../src/db/repository.js';
 import { validateReviewInput } from '../src/db/reviewInput.js';
 import { SAMPLE_JSON, type SampleFile } from './sample-format.js';
 
@@ -23,6 +23,10 @@ const db = openDb();
 const existingSnapshots = (db.prepare('SELECT COUNT(*) AS n FROM property_snapshots').get() as { n: number }).n;
 if (existingSnapshots === 0) {
   for (const s of sample.snapshots) addSnapshot(db, { ...s, runId: null });
+}
+
+for (const [propertyId, photos] of Object.entries(sample.hotelPhotos ?? {})) {
+  if (photos.length) setPropertyPhotos(db, propertyId, photos);
 }
 
 const counts = { new: 0, updated: 0, unchanged: 0, rejected: 0 };

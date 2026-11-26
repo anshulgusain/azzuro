@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { PERIOD_LABELS, type PeriodPreset } from '../shared/dates';
 import { DataStatus } from './components/DataStatus';
+import { HeroBanner } from './components/HeroBanner';
 import { LimitedDataNote } from './components/LimitedDataNote';
 import { Problems } from './components/Problems';
 import { ReviewFeed } from './components/ReviewFeed';
@@ -9,6 +10,7 @@ import { ErrorBox, Icon } from './components/ui';
 import { api, type Scope } from './lib/api';
 import { fmtRange, fmtRelative } from './lib/format';
 import { useData, useUrlState } from './lib/hooks';
+import { useTheme } from './lib/theme';
 
 const PRESETS: PeriodPreset[] = ['this_week', 'last_week', 'last_4_weeks', 'last_3_months', 'last_12_months', 'custom'];
 
@@ -47,6 +49,7 @@ export function App() {
   const summary = useData(() => api.summary(scope), [scopeKey]);
   const health = useData(() => api.health(), []);
   const [refreshMsg, setRefreshMsg] = useState<string | null>(null);
+  const [theme, toggleTheme] = useTheme();
 
   const customInvalid = state.period === 'custom' && (!state.from || !state.to || state.from > state.to);
   const lastRun = health.data?.runs[0];
@@ -92,20 +95,27 @@ export function App() {
               <Icon name="hotel" size={22} />
             </div>
             <div>
-              <div className="brand-name">Azzurro Hotels</div>
-              <div className="brand-sub">Guest reviews from Booking.com</div>
+              <div className="brand-name">
+                Azzurro <span>Hotels</span>
+              </div>
+              <div className="brand-sub">Guest reviews dashboard</div>
             </div>
           </div>
           <div className="masthead-actions">
             <span className="updated" aria-live="polite">
               {freshness}
             </span>
-            <button className="btn btn-on-dark" onClick={refresh} disabled={!!refreshMsg || health.data?.collecting}>
+            <button className="btn btn-ghost" onClick={toggleTheme} aria-pressed={theme === 'dark'} title="Switch between white and dark screens">
+              <Icon name={theme === 'dark' ? 'sun' : 'moon'} size={16} /> {theme === 'dark' ? 'Light mode' : 'Dark mode'}
+            </button>
+            <button className="btn btn-cta" onClick={refresh} disabled={!!refreshMsg || health.data?.collecting}>
               <Icon name="refresh" size={16} /> Get latest reviews
             </button>
           </div>
         </div>
       </header>
+
+      <HeroBanner meta={meta.data} summary={summary.data} property={state.property} />
 
       <div className="wrap">
         <section className="filters" aria-label="Choose hotel and time period">

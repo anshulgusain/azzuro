@@ -1,5 +1,5 @@
 import type { Db } from '../db/database.js';
-import { dataRange, latestSnapshots, queryReviews } from '../db/repository.js';
+import { dataRange, latestSnapshots, propertyPhotos, queryReviews } from '../db/repository.js';
 import { benchmarkInsight, buildInsights, periodStats, topComplaint, topicStats, weeklyTrend } from '../insights/metrics.js';
 import { addDays, type IsoDate, type ResolvedPeriod } from '../shared/dates.js';
 import { PROPERTIES, bookingUrl, getProperty } from '../shared/properties.js';
@@ -24,6 +24,7 @@ export function buildSummary(db: Db, period: ResolvedPeriod, propertyId: string 
   const previousStats = periodStats(previous);
   const topics = topicStats(current, previous);
   const snapshots = latestSnapshots(db);
+  const photos = propertyPhotos(db);
 
   const properties: PropertySummary[] = PROPERTIES.map((p) => {
     const cur = propertyId === p.id || !propertyId ? current.filter((r) => r.propertyId === p.id) : load(period.current, p.id);
@@ -42,6 +43,7 @@ export function buildSummary(db: Db, period: ResolvedPeriod, propertyId: string 
       topComplaint: topComplaint(cur),
       categories: snap?.categories ?? [],
       lastCollectedAt: snap?.capturedAt ?? null,
+      photo: photos.get(p.id)?.[0] ?? null,
     };
   });
 

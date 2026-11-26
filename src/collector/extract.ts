@@ -1,4 +1,4 @@
-import type { CategoryScore } from '../shared/types.js';
+import type { CategoryScore, HotelPhoto } from '../shared/types.js';
 
 /**
  * Pure functions that turn what Booking.com serves into our raw review shape.
@@ -44,6 +44,8 @@ export interface ParsedPropertyPage {
   reviewCount: number | null;
   categories: CategoryScore[];
   featured: RawReview[];
+  /** The hotel's main photo first, then a few more from its gallery. */
+  photos: HotelPhoto[];
   /** Booking.com's own bot flag for this page view, when present. */
   flaggedAsRobot: boolean;
   warnings: string[];
@@ -174,6 +176,9 @@ export function parsePropertyPage(cacheInput: unknown, propertyId: string): Pars
     .filter((r): r is RawReview => r !== null);
   if (!featured.length && (reviewCount ?? 0) > 0) warnings.push('Property has reviews but no featured reviews were found');
 
+  const photos = extractPhotos(cache);
+  if (!photos.length) warnings.push('No hotel photos found');
+
   const flaggedAsRobot = Object.keys(root).some((k) => k.includes('"isRobot":true'));
 
   return {
@@ -184,9 +189,54 @@ export function parsePropertyPage(cacheInput: unknown, propertyId: string): Pars
     reviewCount,
     categories,
     featured,
+    photos,
     flaggedAsRobot,
     warnings,
   };
+}
+
+const MAX_PHOTOS = 6;
+
+/** Picks a photo URL of the given size from Booking's `resource({"size":...})` fields. */
+function photoUrl(photo: Entity, size: string): string | null {
+  for (const [k, v] of Object.entries(photo)) {
+    if (k.startsWith('resource(') && k.includes(`"${size}"`) && isObj(v)) {
+      const url = str(v.absoluteUrl);
+      if (url && /^https:\/\//.test(url)) return url;
+    }
+  }
+  return null;
+}
+
+function toHotelPhoto(photo: Entity): HotelPhoto | null {
+  const url = photoUrl(photo, 'max1024x768') ?? photoUrl(photo, 'max500');
+  const thumbUrl = photoUrl(photo, 'max500') ?? url;
+  if (!url || !thumbUrl) return null;
+  return { url, thumbUrl, alt: str(photo.altText) };
+}
+
+/** The property gallery's main photo, then the rest of the gallery in page order. */
+export function extractPhotos(cache: Cache): HotelPhoto[] {
+  const ordered: Entity[] = [];
+  for (const entity of Object.values(cache)) {
+    if (!isObj(entity) || entity.__typename !== 'Property') continue;
+    for (const [k, gallery] of Object.entries(entity)) {
+      if (!k.startsWith('propertyGallery') || !isObj(gallery)) continue;
+      const main = deref(cache, gallery.mainPhoto);
+      if (main) ordered.push(main);
+    }
+  }
+  ordered.push(...entitiesOfType(cache, 'AccommodationPhoto'));
+  const seen = new Set<unknown>();
+  const out: HotelPhoto[] = [];
+  for (const p of ordered) {
+    if (seen.has(p.id)) continue;
+    seen.add(p.id);
+    const photo = toHotelPhoto(p);
+    if (photo) out.push(photo);
+    if (out.length >= MAX_PHOTOS) break;
+  }
+  return out;
 }
 
 function featuredToRaw(cache: Cache, r: Entity, propertyId: string): RawReview | null {

@@ -4,7 +4,7 @@ import { join, resolve } from 'node:path';
 import express, { type NextFunction, type Request, type Response } from 'express';
 import { isCollectionRunning } from '../collector/run.js';
 import { openDb } from '../db/database.js';
-import { healthReport, queryReviews } from '../db/repository.js';
+import { healthReport, propertyPhotos, queryReviews } from '../db/repository.js';
 import { isValidIsoDate, resolvePeriod, todayLocal, type PeriodPreset } from '../shared/dates.js';
 import { PROPERTIES, bookingUrl, getProperty } from '../shared/properties.js';
 import { CLASSIFIER_VERSION, TOPICS, TOPIC_IDS, type Sentiment, type TopicId } from '../shared/topics.js';
@@ -56,8 +56,15 @@ function propertyFromQuery(q: Query): string | null {
 
 app.get('/api/meta', (_req, res) => {
   const range = dataBounds(db);
+  const photos = propertyPhotos(db);
   const body: MetaResponse = {
-    properties: PROPERTIES.map((p) => ({ id: p.id, name: p.name, bookingUrl: bookingUrl(p).replace('.en-gb.html', '.html') })),
+    properties: PROPERTIES.map((p) => ({
+      id: p.id,
+      name: p.name,
+      bookingUrl: bookingUrl(p).replace('.en-gb.html', '.html'),
+      photo: photos.get(p.id)?.[0] ?? null,
+      photos: (photos.get(p.id) ?? []).slice(0, 4),
+    })),
     topics: TOPICS.map((t) => ({ id: t.id, label: t.label, description: t.description, terms: [...t.terms] })),
     today: todayLocal(),
     dataRange: { from: range.from, to: range.to },

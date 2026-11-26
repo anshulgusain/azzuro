@@ -173,6 +173,7 @@ async function collectOne(
     bookingHotelId: page.hotelId,
     bookingName: page.name,
     address: page.address,
+    photos: page.photos,
   });
 
   // Full-list copies win over featured copies of the same review (they carry more detail).

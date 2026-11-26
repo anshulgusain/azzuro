@@ -1,4 +1,4 @@
-import type { CategoryScore } from '../src/shared/types.js';
+import type { CategoryScore, HotelPhoto } from '../src/shared/types.js';
 
 /** File format of data/sample/reviews.json (shared by export-sample and seed). */
 export interface SampleFile {
@@ -13,6 +13,8 @@ export interface SampleFile {
     categories: CategoryScore[];
   }>;
   reviews: Array<Record<string, unknown>>;
+  /** Links to each hotel's Booking.com gallery photos (optional for older files). */
+  hotelPhotos?: Record<string, HotelPhoto[]>;
 }
 
 export const SAMPLE_JSON = 'data/sample/reviews.json';

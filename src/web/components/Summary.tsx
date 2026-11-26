@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { ReviewFilters } from '../App';
 import { PERIOD_LABELS } from '../../shared/dates';
 import { topicLabel } from '../../shared/topics';
@@ -137,6 +138,8 @@ function KeyPoint({ point, onOpenReviews }: { point: Insight; onOpenReviews: (f:
 function HotelCard({ hotel: p, selected, versus, onClick }: { hotel: PropertySummary; selected: boolean; versus: string; onClick: () => void }) {
   return (
     <button className={`hotel-card${selected ? ' is-selected' : ''}`} onClick={onClick} aria-pressed={selected}>
+      <HotelPhotoImg photo={p.photo} />
+      <span className="hotel-body">
       <span className="hotel-name">{p.name}</span>
       {p.current.count && p.current.avgScore !== null ? (
         <>
@@ -173,8 +176,21 @@ function HotelCard({ hotel: p, selected, versus, onClick }: { hotel: PropertySum
           </span>
         </span>
       </span>
+      </span>
     </button>
   );
+}
+
+function HotelPhotoImg({ photo }: { photo: PropertySummary['photo'] }) {
+  const [failed, setFailed] = useState(false);
+  if (!photo || failed) {
+    return (
+      <span className="hotel-photo hotel-photo-empty" aria-hidden="true">
+        <Icon name="hotel" size={28} />
+      </span>
+    );
+  }
+  return <img className="hotel-photo" src={photo.thumbUrl} alt={photo.alt ?? ''} loading="lazy" onError={() => setFailed(true)} />;
 }
 
 function TopicList({

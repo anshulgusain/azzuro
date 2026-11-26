@@ -1,6 +1,6 @@
 {
   "format": "azzurro-reviews/v1",
-  "exportedAt": "2026-11-26T06:21:24.190Z",
+  "exportedAt": "2026-11-26T07:01:29.690Z",
   "note": "Public Booking.com guest reviews collected by `npm run collect`. Guest names removed.",
   "snapshots": [
     {
@@ -230,8 +230,594 @@
           "cityHigh": 9.1
         }
       ]
+    },
+    {
+      "propertyId": "olympic-paddington",
+      "capturedAt": "2026-11-26T06:43:41.594Z",
+      "overallScore": 6.4,
+      "reviewCount": 129,
+      "categories": [
+        {
+          "key": "hotel_staff",
+          "label": "Staff",
+          "score": 7.7,
+          "cityLow": 7.5,
+          "cityHigh": 9.6
+        },
+        {
+          "key": "hotel_services",
+          "label": "Facilities",
+          "score": 6.3,
+          "cityLow": 7.1,
+          "cityHigh": 9.4
+        },
+        {
+          "key": "hotel_clean",
+          "label": "Cleanliness",
+          "score": 6.8,
+          "cityLow": 7.4,
+          "cityHigh": 9.5
+        },
+        {
+          "key": "hotel_comfort",
+          "label": "Comfort",
+          "score": 7,
+          "cityLow": 7.4,
+          "cityHigh": 9.5
+        },
+        {
+          "key": "hotel_value",
+          "label": "Value for money",
+          "score": 6.9,
+          "cityLow": 7.2,
+          "cityHigh": 9.2
+        },
+        {
+          "key": "hotel_location",
+          "label": "Location",
+          "score": 8.3,
+          "cityLow": 8.3,
+          "cityHigh": 9.9
+        },
+        {
+          "key": "hotel_free_wifi",
+          "label": "Free WiFi",
+          "score": 8.3,
+          "cityLow": 7.7,
+          "cityHigh": 9.1
+        }
+      ]
+    },
+    {
+      "propertyId": "potts-point",
+      "capturedAt": "2026-11-26T06:44:04.600Z",
+      "overallScore": 6.2,
+      "reviewCount": 2385,
+      "categories": [
+        {
+          "key": "hotel_staff",
+          "label": "Staff",
+          "score": 7.4,
+          "cityLow": 7.5,
+          "cityHigh": 9.6
+        },
+        {
+          "key": "hotel_services",
+          "label": "Facilities",
+          "score": 6.5,
+          "cityLow": 7.1,
+          "cityHigh": 9.4
+        },
+        {
+          "key": "hotel_clean",
+          "label": "Cleanliness",
+          "score": 6.6,
+          "cityLow": 7.4,
+          "cityHigh": 9.5
+        },
+        {
+          "key": "hotel_comfort",
+          "label": "Comfort",
+          "score": 6.5,
+          "cityLow": 7.4,
+          "cityHigh": 9.5
+        },
+        {
+          "key": "hotel_value",
+          "label": "Value for money",
+          "score": 7.1,
+          "cityLow": 7.2,
+          "cityHigh": 9.2
+        },
+        {
+          "key": "hotel_location",
+          "label": "Location",
+          "score": 8.3,
+          "cityLow": 8.3,
+          "cityHigh": 9.9
+        },
+        {
+          "key": "hotel_free_wifi",
+          "label": "Free WiFi",
+          "score": 8.3,
+          "cityLow": 7.7,
+          "cityHigh": 9.1
+        }
+      ]
+    },
+    {
+      "propertyId": "central-sydney",
+      "capturedAt": "2026-11-26T06:44:16.155Z",
+      "overallScore": 6.6,
+      "reviewCount": 2444,
+      "categories": [
+        {
+          "key": "hotel_staff",
+          "label": "Staff",
+          "score": 7.5,
+          "cityLow": 7.5,
+          "cityHigh": 9.6
+        },
+        {
+          "key": "hotel_services",
+          "label": "Facilities",
+          "score": 6.7,
+          "cityLow": 7.1,
+          "cityHigh": 9.4
+        },
+        {
+          "key": "hotel_clean",
+          "label": "Cleanliness",
+          "score": 6.9,
+          "cityLow": 7.4,
+          "cityHigh": 9.5
+        },
+        {
+          "key": "hotel_comfort",
+          "label": "Comfort",
+          "score": 6.9,
+          "cityLow": 7.4,
+          "cityHigh": 9.5
+        },
+        {
+          "key": "hotel_value",
+          "label": "Value for money",
+          "score": 7.4,
+          "cityLow": 7.2,
+          "cityHigh": 9.2
+        },
+        {
+          "key": "hotel_location",
+          "label": "Location",
+          "score": 8.5,
+          "cityLow": 8.3,
+          "cityHigh": 9.9
+        },
+        {
+          "key": "hotel_free_wifi",
+          "label": "Free WiFi",
+          "score": 9,
+          "cityLow": 7.7,
+          "cityHigh": 9.1
+        }
+      ]
+    },
+    {
+      "propertyId": "darling-harbour",
+      "capturedAt": "2026-11-26T06:44:27.284Z",
+      "overallScore": 6.6,
+      "reviewCount": 4305,
+      "categories": [
+        {
+          "key": "hotel_staff",
+          "label": "Staff",
+          "score": 7.6,
+          "cityLow": 7.5,
+          "cityHigh": 9.6
+        },
+        {
+          "key": "hotel_services",
+          "label": "Facilities",
+          "score": 6.8,
+          "cityLow": 7.1,
+          "cityHigh": 9.4
+        },
+        {
+          "key": "hotel_clean",
+          "label": "Cleanliness",
+          "score": 6.8,
+          "cityLow": 7.4,
+          "cityHigh": 9.5
+        },
+        {
+          "key": "hotel_comfort",
+          "label": "Comfort",
+          "score": 6.7,
+          "cityLow": 7.4,
+          "cityHigh": 9.5
+        },
+        {
+          "key": "hotel_value",
+          "label": "Value for money",
+          "score": 7.5,
+          "cityLow": 7.2,
+          "cityHigh": 9.2
+        },
+        {
+          "key": "hotel_location",
+          "label": "Location",
+          "score": 8.2,
+          "cityLow": 8.3,
+          "cityHigh": 9.9
+        },
+        {
+          "key": "hotel_free_wifi",
+          "label": "Free WiFi",
+          "score": 8.3,
+          "cityLow": 7.7,
+          "cityHigh": 9.1
+        }
+      ]
+    },
+    {
+      "propertyId": "olympic-paddington",
+      "capturedAt": "2026-11-26T06:56:32.024Z",
+      "overallScore": 6.4,
+      "reviewCount": 129,
+      "categories": [
+        {
+          "key": "hotel_staff",
+          "label": "Staff",
+          "score": 7.7,
+          "cityLow": 7.5,
+          "cityHigh": 9.6
+        },
+        {
+          "key": "hotel_services",
+          "label": "Facilities",
+          "score": 6.3,
+          "cityLow": 7.1,
+          "cityHigh": 9.4
+        },
+        {
+          "key": "hotel_clean",
+          "label": "Cleanliness",
+          "score": 6.8,
+          "cityLow": 7.4,
+          "cityHigh": 9.5
+        },
+        {
+          "key": "hotel_comfort",
+          "label": "Comfort",
+          "score": 7,
+          "cityLow": 7.4,
+          "cityHigh": 9.5
+        },
+        {
+          "key": "hotel_value",
+          "label": "Value for money",
+          "score": 6.9,
+          "cityLow": 7.2,
+          "cityHigh": 9.2
+        },
+        {
+          "key": "hotel_location",
+          "label": "Location",
+          "score": 8.3,
+          "cityLow": 8.3,
+          "cityHigh": 9.9
+        },
+        {
+          "key": "hotel_free_wifi",
+          "label": "Free WiFi",
+          "score": 8.3,
+          "cityLow": 7.7,
+          "cityHigh": 9.1
+        }
+      ]
+    },
+    {
+      "propertyId": "potts-point",
+      "capturedAt": "2026-11-26T06:56:43.163Z",
+      "overallScore": 6.2,
+      "reviewCount": 2385,
+      "categories": [
+        {
+          "key": "hotel_staff",
+          "label": "Staff",
+          "score": 7.4,
+          "cityLow": 7.5,
+          "cityHigh": 9.6
+        },
+        {
+          "key": "hotel_services",
+          "label": "Facilities",
+          "score": 6.5,
+          "cityLow": 7.1,
+          "cityHigh": 9.4
+        },
+        {
+          "key": "hotel_clean",
+          "label": "Cleanliness",
+          "score": 6.6,
+          "cityLow": 7.4,
+          "cityHigh": 9.5
+        },
+        {
+          "key": "hotel_comfort",
+          "label": "Comfort",
+          "score": 6.5,
+          "cityLow": 7.4,
+          "cityHigh": 9.5
+        },
+        {
+          "key": "hotel_value",
+          "label": "Value for money",
+          "score": 7.1,
+          "cityLow": 7.2,
+          "cityHigh": 9.2
+        },
+        {
+          "key": "hotel_location",
+          "label": "Location",
+          "score": 8.3,
+          "cityLow": 8.3,
+          "cityHigh": 9.9
+        },
+        {
+          "key": "hotel_free_wifi",
+          "label": "Free WiFi",
+          "score": 8.3,
+          "cityLow": 7.7,
+          "cityHigh": 9.1
+        }
+      ]
+    },
+    {
+      "propertyId": "central-sydney",
+      "capturedAt": "2026-11-26T06:56:53.321Z",
+      "overallScore": 6.6,
+      "reviewCount": 2444,
+      "categories": [
+        {
+          "key": "hotel_staff",
+          "label": "Staff",
+          "score": 7.5,
+          "cityLow": 7.5,
+          "cityHigh": 9.6
+        },
+        {
+          "key": "hotel_services",
+          "label": "Facilities",
+          "score": 6.7,
+          "cityLow": 7.1,
+          "cityHigh": 9.4
+        },
+        {
+          "key": "hotel_clean",
+          "label": "Cleanliness",
+          "score": 6.9,
+          "cityLow": 7.4,
+          "cityHigh": 9.5
+        },
+        {
+          "key": "hotel_comfort",
+          "label": "Comfort",
+          "score": 6.9,
+          "cityLow": 7.4,
+          "cityHigh": 9.5
+        },
+        {
+          "key": "hotel_value",
+          "label": "Value for money",
+          "score": 7.4,
+          "cityLow": 7.2,
+          "cityHigh": 9.2
+        },
+        {
+          "key": "hotel_location",
+          "label": "Location",
+          "score": 8.5,
+          "cityLow": 8.3,
+          "cityHigh": 9.9
+        },
+        {
+          "key": "hotel_free_wifi",
+          "label": "Free WiFi",
+          "score": 9,
+          "cityLow": 7.7,
+          "cityHigh": 9.1
+        }
+      ]
+    },
+    {
+      "propertyId": "darling-harbour",
+      "capturedAt": "2026-11-26T06:57:32.630Z",
+      "overallScore": 6.6,
+      "reviewCount": 4305,
+      "categories": [
+        {
+          "key": "hotel_staff",
+          "label": "Staff",
+          "score": 7.6,
+          "cityLow": 7.5,
+          "cityHigh": 9.6
+        },
+        {
+          "key": "hotel_services",
+          "label": "Facilities",
+          "score": 6.8,
+          "cityLow": 7.1,
+          "cityHigh": 9.4
+        },
+        {
+          "key": "hotel_clean",
+          "label": "Cleanliness",
+          "score": 6.8,
+          "cityLow": 7.4,
+          "cityHigh": 9.5
+        },
+        {
+          "key": "hotel_comfort",
+          "label": "Comfort",
+          "score": 6.7,
+          "cityLow": 7.4,
+          "cityHigh": 9.5
+        },
+        {
+          "key": "hotel_value",
+          "label": "Value for money",
+          "score": 7.5,
+          "cityLow": 7.2,
+          "cityHigh": 9.2
+        },
+        {
+          "key": "hotel_location",
+          "label": "Location",
+          "score": 8.2,
+          "cityLow": 8.3,
+          "cityHigh": 9.9
+        },
+        {
+          "key": "hotel_free_wifi",
+          "label": "Free WiFi",
+          "score": 8.3,
+          "cityLow": 7.7,
+          "cityHigh": 9.1
+        }
+      ]
     }
   ],
+  "hotelPhotos": {
+    "olympic-paddington": [
+      {
+        "url": "https://cf.bstatic.com/xdata/images/hotel/max1024x768/923092743.jpg?k=34fee9dbde66b32ff884d4e27888e21bbb8d6cbff1bfb1d7fa8a5ac0e4a19f10&o=",
+        "thumbUrl": "https://cf.bstatic.com/xdata/images/hotel/max500/923092743.jpg?k=34fee9dbde66b32ff884d4e27888e21bbb8d6cbff1bfb1d7fa8a5ac0e4a19f10&o=",
+        "alt": "a white bedroom with a bed and a kitchen at Olympic Paddington Budget Hotel - across Allianz Stadium in Sydney"
+      },
+      {
+        "url": "https://cf.bstatic.com/xdata/images/hotel/max1024x768/923092804.jpg?k=54e34aa2487acb31d93c998ad723e0bbeeabc4b20ea3d5f85d8ec8ad6f0cf3f5&o=",
+        "thumbUrl": "https://cf.bstatic.com/xdata/images/hotel/max500/923092804.jpg?k=54e34aa2487acb31d93c998ad723e0bbeeabc4b20ea3d5f85d8ec8ad6f0cf3f5&o=",
+        "alt": "a bedroom with a bed and a desk and two windows at Olympic Paddington Budget Hotel - across Allianz Stadium in Sydney"
+      },
+      {
+        "url": "https://cf.bstatic.com/xdata/images/hotel/max1024x768/923092780.jpg?k=adeecf85b7644b7f057efe097949187716074d6a1c75849c6cb743b8c652451f&o=",
+        "thumbUrl": "https://cf.bstatic.com/xdata/images/hotel/max500/923092780.jpg?k=adeecf85b7644b7f057efe097949187716074d6a1c75849c6cb743b8c652451f&o=",
+        "alt": "a bedroom with a bed and a mirror at Olympic Paddington Budget Hotel - across Allianz Stadium in Sydney"
+      },
+      {
+        "url": "https://cf.bstatic.com/xdata/images/hotel/max1024x768/923092808.jpg?k=b6c4e6d47141b6423382ebbdb452e5d1dbd1efc1e8ba24d31f45c6a7bff3f2f0&o=",
+        "thumbUrl": "https://cf.bstatic.com/xdata/images/hotel/max500/923092808.jpg?k=b6c4e6d47141b6423382ebbdb452e5d1dbd1efc1e8ba24d31f45c6a7bff3f2f0&o=",
+        "alt": "a white bedroom with a large bed and a television at Olympic Paddington Budget Hotel - across Allianz Stadium in Sydney"
+      },
+      {
+        "url": "https://cf.bstatic.com/xdata/images/hotel/max1024x768/923092887.jpg?k=0b3b5603565e0760f2ed43e4bff3b1b289218945045ce0f2cd2261be7dcb8c56&o=",
+        "thumbUrl": "https://cf.bstatic.com/xdata/images/hotel/max500/923092887.jpg?k=0b3b5603565e0760f2ed43e4bff3b1b289218945045ce0f2cd2261be7dcb8c56&o=",
+        "alt": "a dog is laying on a bed in a blanket at Olympic Paddington Budget Hotel - across Allianz Stadium in Sydney"
+      },
+      {
+        "url": "https://cf.bstatic.com/xdata/images/hotel/max1024x768/923092892.jpg?k=817362342921968d4001c19951a8b29aff3b15dd5ff1cfc239c48eec5d3764d8&o=",
+        "thumbUrl": "https://cf.bstatic.com/xdata/images/hotel/max500/923092892.jpg?k=817362342921968d4001c19951a8b29aff3b15dd5ff1cfc239c48eec5d3764d8&o=",
+        "alt": "a kitchen with white cabinets and a black refrigerator at Olympic Paddington Budget Hotel - across Allianz Stadium in Sydney"
+      }
+    ],
+    "potts-point": [
+      {
+        "url": "https://cf.bstatic.com/xdata/images/hotel/max1024x768/836420451.jpg?k=6d17b6a6cc099ff5ae76ae008cbf483c792d4465bb21eeafff37a426aa962272&o=",
+        "thumbUrl": "https://cf.bstatic.com/xdata/images/hotel/max500/836420451.jpg?k=6d17b6a6cc099ff5ae76ae008cbf483c792d4465bb21eeafff37a426aa962272&o=",
+        "alt": "a view of the sydney skyline with the sydney harbour bridge at Azzurro Pod Hotel Potts Point - Near Kings Cross Station in Sydney"
+      },
+      {
+        "url": "https://cf.bstatic.com/xdata/images/hotel/max1024x768/594196676.jpg?k=15aceb45c30cd0e2f958cdb605ecc01f455d5b28f58df0d1a10a8f677fbdd475&o=",
+        "thumbUrl": "https://cf.bstatic.com/xdata/images/hotel/max500/594196676.jpg?k=15aceb45c30cd0e2f958cdb605ecc01f455d5b28f58df0d1a10a8f677fbdd475&o=",
+        "alt": "a bedroom with two bunk beds and a mirror at Azzurro Pod Hotel Potts Point - Near Kings Cross Station in Sydney"
+      },
+      {
+        "url": "https://cf.bstatic.com/xdata/images/hotel/max1024x768/594197021.jpg?k=300ea012e848b99ea46e6714288ea8cab773d303a3229305ecf7aa2bb7c37ac3&o=",
+        "thumbUrl": "https://cf.bstatic.com/xdata/images/hotel/max500/594197021.jpg?k=300ea012e848b99ea46e6714288ea8cab773d303a3229305ecf7aa2bb7c37ac3&o=",
+        "alt": "a mirror on a wall next to a white cabinet at Azzurro Pod Hotel Potts Point - Near Kings Cross Station in Sydney"
+      },
+      {
+        "url": "https://cf.bstatic.com/xdata/images/hotel/max1024x768/594197022.jpg?k=8fc72b682dcdc8b5d9707431bc0f020c1c68ccb3d7f048db2f6f72453221a8ad&o=",
+        "thumbUrl": "https://cf.bstatic.com/xdata/images/hotel/max500/594197022.jpg?k=8fc72b682dcdc8b5d9707431bc0f020c1c68ccb3d7f048db2f6f72453221a8ad&o=",
+        "alt": "a black and white photo of a bed in a room at Azzurro Pod Hotel Potts Point - Near Kings Cross Station in Sydney"
+      },
+      {
+        "url": "https://cf.bstatic.com/xdata/images/hotel/max1024x768/497557845.jpg?k=4a2cde33db48426f5de58f46a10877b2aac14080375d72cfa5898b367b4e153a&o=",
+        "thumbUrl": "https://cf.bstatic.com/xdata/images/hotel/max500/497557845.jpg?k=4a2cde33db48426f5de58f46a10877b2aac14080375d72cfa5898b367b4e153a&o=",
+        "alt": "a bathroom with a white sink and a mirror at Azzurro Pod Hotel Potts Point - Near Kings Cross Station in Sydney"
+      },
+      {
+        "url": "https://cf.bstatic.com/xdata/images/hotel/max1024x768/592622567.jpg?k=36970cda0856666d92fccf3d2d2e5b6ff50f19525043b203b1e3e69590084229&o=",
+        "thumbUrl": "https://cf.bstatic.com/xdata/images/hotel/max500/592622567.jpg?k=36970cda0856666d92fccf3d2d2e5b6ff50f19525043b203b1e3e69590084229&o=",
+        "alt": "a buffet with many different dishes of food on a table at Azzurro Pod Hotel Potts Point - Near Kings Cross Station in Sydney"
+      }
+    ],
+    "central-sydney": [
+      {
+        "url": "https://cf.bstatic.com/xdata/images/hotel/max1024x768/896335236.jpg?k=09fead949e68c9f404ea91ea9a508b76114f926ebf12bf7d1cee2165ed520390&o=",
+        "thumbUrl": "https://cf.bstatic.com/xdata/images/hotel/max500/896335236.jpg?k=09fead949e68c9f404ea91ea9a508b76114f926ebf12bf7d1cee2165ed520390&o=",
+        "alt": "a kitchen with green tiled walls and a counter at Azzurro Pod Hotel Central Sydney - Near Central Station in Sydney"
+      },
+      {
+        "url": "https://cf.bstatic.com/xdata/images/hotel/max1024x768/581798331.jpg?k=13babf5cfc1d2a4a9f60280ad10e057fbc6d9d6a6b4ed1794f10def62034053d&o=",
+        "thumbUrl": "https://cf.bstatic.com/xdata/images/hotel/max500/581798331.jpg?k=13babf5cfc1d2a4a9f60280ad10e057fbc6d9d6a6b4ed1794f10def62034053d&o=",
+        "alt": "two bunk beds in a room with a mirror at Azzurro Pod Hotel Central Sydney - Near Central Station in Sydney"
+      },
+      {
+        "url": "https://cf.bstatic.com/xdata/images/hotel/max1024x768/581798344.jpg?k=5430c8db09d8f82ab92f9fd86417c91534c2f05674d5eb5de1e8b85a046c265a&o=",
+        "thumbUrl": "https://cf.bstatic.com/xdata/images/hotel/max500/581798344.jpg?k=5430c8db09d8f82ab92f9fd86417c91534c2f05674d5eb5de1e8b85a046c265a&o=",
+        "alt": "Gallery image of Azzurro Pod Hotel Central Sydney - Near Central Station in Sydney"
+      },
+      {
+        "url": "https://cf.bstatic.com/xdata/images/hotel/max1024x768/581798340.jpg?k=0536fe6579096a07ef480384687933862bde26b9686f42bf44dd41a4df0a80f3&o=",
+        "thumbUrl": "https://cf.bstatic.com/xdata/images/hotel/max500/581798340.jpg?k=0536fe6579096a07ef480384687933862bde26b9686f42bf44dd41a4df0a80f3&o=",
+        "alt": "a bathroom with a sink and a mirror at Azzurro Pod Hotel Central Sydney - Near Central Station in Sydney"
+      },
+      {
+        "url": "https://cf.bstatic.com/xdata/images/hotel/max1024x768/592613036.jpg?k=983c367f26c82f53254e563de6b02ed576dc84a76cbd9c40b08b64e274cbe241&o=",
+        "thumbUrl": "https://cf.bstatic.com/xdata/images/hotel/max500/592613036.jpg?k=983c367f26c82f53254e563de6b02ed576dc84a76cbd9c40b08b64e274cbe241&o=",
+        "alt": "a small bathroom with a bed and a mirror at Azzurro Pod Hotel Central Sydney - Near Central Station in Sydney"
+      },
+      {
+        "url": "https://cf.bstatic.com/xdata/images/hotel/max1024x768/468760702.jpg?k=c8e02e05188dcd524fa8af78505124f9806b89e259c43b9ce12b5d5e3849b136&o=",
+        "thumbUrl": "https://cf.bstatic.com/xdata/images/hotel/max500/468760702.jpg?k=c8e02e05188dcd524fa8af78505124f9806b89e259c43b9ce12b5d5e3849b136&o=",
+        "alt": "a bathroom with a sink and a mirror at Azzurro Pod Hotel Central Sydney - Near Central Station in Sydney"
+      }
+    ],
+    "darling-harbour": [
+      {
+        "url": "https://cf.bstatic.com/xdata/images/hotel/max1024x768/836420405.jpg?k=1677be7823b651afad60f378f5e72d1d4a3694e4f593cac17b731e712156837c&o=",
+        "thumbUrl": "https://cf.bstatic.com/xdata/images/hotel/max500/836420405.jpg?k=1677be7823b651afad60f378f5e72d1d4a3694e4f593cac17b731e712156837c&o=",
+        "alt": "a hallway with the words free dinner and a picture of a room with a door at Azzurro Pod Hotel Darling Harbour - Near Convention Center in Sydney"
+      },
+      {
+        "url": "https://cf.bstatic.com/xdata/images/hotel/max1024x768/551333703.jpg?k=e5ac025b269d05cfcc70b313a8d43ba0195d7db2dfaf246bfa764c3e097106bc&o=",
+        "thumbUrl": "https://cf.bstatic.com/xdata/images/hotel/max500/551333703.jpg?k=e5ac025b269d05cfcc70b313a8d43ba0195d7db2dfaf246bfa764c3e097106bc&o=",
+        "alt": "a bedroom with two bunk beds and a mirror at Azzurro Pod Hotel Darling Harbour - Near Convention Center in Sydney"
+      },
+      {
+        "url": "https://cf.bstatic.com/xdata/images/hotel/max1024x768/551333711.jpg?k=da2974336cdb873d1b8a1eb47a88215a533e7a38356b0b6bb56f3d7386beec53&o=",
+        "thumbUrl": "https://cf.bstatic.com/xdata/images/hotel/max500/551333711.jpg?k=da2974336cdb873d1b8a1eb47a88215a533e7a38356b0b6bb56f3d7386beec53&o=",
+        "alt": "a bedroom with two bunk beds and a rug at Azzurro Pod Hotel Darling Harbour - Near Convention Center in Sydney"
+      },
+      {
+        "url": "https://cf.bstatic.com/xdata/images/hotel/max1024x768/617262230.jpg?k=f46587bdc4c9c77ed9682046ecbf44126926738c866a3cfdaa8552dad415b46d&o=",
+        "thumbUrl": "https://cf.bstatic.com/xdata/images/hotel/max500/617262230.jpg?k=f46587bdc4c9c77ed9682046ecbf44126926738c866a3cfdaa8552dad415b46d&o=",
+        "alt": "Gallery image of Azzurro Pod Hotel Darling Harbour - Near Convention Center in Sydney"
+      },
+      {
+        "url": "https://cf.bstatic.com/xdata/images/hotel/max1024x768/617262441.jpg?k=9b11637f16642b34f1f3468678ab3cd2009ea9bd76d99a5b240db48dbf5baf02&o=",
+        "thumbUrl": "https://cf.bstatic.com/xdata/images/hotel/max500/617262441.jpg?k=9b11637f16642b34f1f3468678ab3cd2009ea9bd76d99a5b240db48dbf5baf02&o=",
+        "alt": "a bedroom with two bunk beds and a mirror at Azzurro Pod Hotel Darling Harbour - Near Convention Center in Sydney"
+      },
+      {
+        "url": "https://cf.bstatic.com/xdata/images/hotel/max1024x768/523290695.jpg?k=c40de755a661a55cec38afc9803b89b5c032d91c0134414a4216bc8de8795882&o=",
+        "thumbUrl": "https://cf.bstatic.com/xdata/images/hotel/max500/523290695.jpg?k=c40de755a661a55cec38afc9803b89b5c032d91c0134414a4216bc8de8795882&o=",
+        "alt": "a bathroom with a toilet and a sink and a mirror at Azzurro Pod Hotel Darling Harbour - Near Convention Center in Sydney"
+      }
+    ]
+  },
   "reviews": [
     {
       "id": "bkg:6a4980588646358a",

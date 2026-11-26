@@ -96,4 +96,7 @@ export const MIGRATIONS: string[] = [
   );
   CREATE INDEX idx_snapshots_property ON property_snapshots (property_id, captured_at);
   `,
+  /* 2: hotel photos (links to the property's Booking.com gallery) */ `
+  ALTER TABLE properties ADD COLUMN photos_json TEXT NOT NULL DEFAULT '[]';
+  `,
 ];

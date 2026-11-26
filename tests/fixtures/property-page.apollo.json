@@ -419,5 +419,108 @@
   "id": "1621129105",
   "name": "Standard Double Room (Ensuite)",
   "description": "The unit offers 1 bed."
+ },
+ "Property:{\"id\":16211291}": {
+  "__typename": "Property",
+  "id": 16211291,
+  "propertyGallery({\"limit\":500,\"sortOrder\":\"GALLERY_SORT_CRITERIA_PERSONALIZATION\"})": {
+   "__typename": "PropertyGallery",
+   "mainPhoto": {
+    "__ref": "AccommodationPhoto:923092743"
+   }
+  }
+ },
+ "AccommodationPhoto:923092743": {
+  "__typename": "AccommodationPhoto",
+  "id": 923092743,
+  "altText": "a white bedroom with a bed and a kitchen at Olympic Paddington Budget Hotel - across Allianz Stadium in Sydney",
+  "photoType": "ROOM",
+  "resource({\"size\":\"square60\"})": {
+   "__typename": "PhotoResource",
+   "relativeUrl": "/xdata/images/hotel/square60/923092743.jpg?k=34fee9dbde66b32ff884d4e27888e21bbb8d6cbff1bfb1d7fa8a5ac0e4a19f10&o=",
+   "absoluteUrl": "https://cf.bstatic.com/xdata/images/hotel/square60/923092743.jpg?k=34fee9dbde66b32ff884d4e27888e21bbb8d6cbff1bfb1d7fa8a5ac0e4a19f10&o="
+  },
+  "resource({\"size\":\"max300\"})": {
+   "__typename": "PhotoResource",
+   "relativeUrl": "/xdata/images/hotel/max300/923092743.jpg?k=34fee9dbde66b32ff884d4e27888e21bbb8d6cbff1bfb1d7fa8a5ac0e4a19f10&o=",
+   "absoluteUrl": "https://cf.bstatic.com/xdata/images/hotel/max300/923092743.jpg?k=34fee9dbde66b32ff884d4e27888e21bbb8d6cbff1bfb1d7fa8a5ac0e4a19f10&o="
+  },
+  "resource({\"size\":\"max500\"})": {
+   "__typename": "PhotoResource",
+   "relativeUrl": "/xdata/images/hotel/max500/923092743.jpg?k=34fee9dbde66b32ff884d4e27888e21bbb8d6cbff1bfb1d7fa8a5ac0e4a19f10&o=",
+   "absoluteUrl": "https://cf.bstatic.com/xdata/images/hotel/max500/923092743.jpg?k=34fee9dbde66b32ff884d4e27888e21bbb8d6cbff1bfb1d7fa8a5ac0e4a19f10&o="
+  },
+  "resource({\"size\":\"max1024x768\"})": {
+   "__typename": "PhotoResource",
+   "relativeUrl": "/xdata/images/hotel/max1024x768/923092743.jpg?k=34fee9dbde66b32ff884d4e27888e21bbb8d6cbff1bfb1d7fa8a5ac0e4a19f10&o=",
+   "absoluteUrl": "https://cf.bstatic.com/xdata/images/hotel/max1024x768/923092743.jpg?k=34fee9dbde66b32ff884d4e27888e21bbb8d6cbff1bfb1d7fa8a5ac0e4a19f10&o="
+  },
+  "resource({\"size\":\"max200\"})": {
+   "__typename": "PhotoResource",
+   "relativeUrl": "/xdata/images/hotel/max200/923092743.jpg?k=34fee9dbde66b32ff884d4e27888e21bbb8d6cbff1bfb1d7fa8a5ac0e4a19f10&o=",
+   "absoluteUrl": "https://cf.bstatic.com/xdata/images/hotel/max200/923092743.jpg?k=34fee9dbde66b32ff884d4e27888e21bbb8d6cbff1bfb1d7fa8a5ac0e4a19f10&o="
+  }
+ },
+ "AccommodationPhoto:923092804": {
+  "__typename": "AccommodationPhoto",
+  "id": 923092804,
+  "altText": "a bedroom with a bed and a desk and two windows at Olympic Paddington Budget Hotel - across Allianz Stadium in Sydney",
+  "photoType": "ROOM",
+  "resource({\"size\":\"square60\"})": {
+   "__typename": "PhotoResource",
+   "relativeUrl": "/xdata/images/hotel/square60/923092804.jpg?k=54e34aa2487acb31d93c998ad723e0bbeeabc4b20ea3d5f85d8ec8ad6f0cf3f5&o=",
+   "absoluteUrl": "https://cf.bstatic.com/xdata/images/hotel/square60/923092804.jpg?k=54e34aa2487acb31d93c998ad723e0bbeeabc4b20ea3d5f85d8ec8ad6f0cf3f5&o="
+  },
+  "resource({\"size\":\"max300\"})": {
+   "__typename": "PhotoResource",
+   "relativeUrl": "/xdata/images/hotel/max300/923092804.jpg?k=54e34aa2487acb31d93c998ad723e0bbeeabc4b20ea3d5f85d8ec8ad6f0cf3f5&o=",
+   "absoluteUrl": "https://cf.bstatic.com/xdata/images/hotel/max300/923092804.jpg?k=54e34aa2487acb31d93c998ad723e0bbeeabc4b20ea3d5f85d8ec8ad6f0cf3f5&o="
+  },
+  "resource({\"size\":\"max500\"})": {
+   "__typename": "PhotoResource",
+   "relativeUrl": "/xdata/images/hotel/max500/923092804.jpg?k=54e34aa2487acb31d93c998ad723e0bbeeabc4b20ea3d5f85d8ec8ad6f0cf3f5&o=",
+   "absoluteUrl": "https://cf.bstatic.com/xdata/images/hotel/max500/923092804.jpg?k=54e34aa2487acb31d93c998ad723e0bbeeabc4b20ea3d5f85d8ec8ad6f0cf3f5&o="
+  },
+  "resource({\"size\":\"max1024x768\"})": {
+   "__typename": "PhotoResource",
+   "relativeUrl": "/xdata/images/hotel/max1024x768/923092804.jpg?k=54e34aa2487acb31d93c998ad723e0bbeeabc4b20ea3d5f85d8ec8ad6f0cf3f5&o=",
+   "absoluteUrl": "https://cf.bstatic.com/xdata/images/hotel/max1024x768/923092804.jpg?k=54e34aa2487acb31d93c998ad723e0bbeeabc4b20ea3d5f85d8ec8ad6f0cf3f5&o="
+  },
+  "resource({\"size\":\"max200\"})": {
+   "__typename": "PhotoResource",
+   "relativeUrl": "/xdata/images/hotel/max200/923092804.jpg?k=54e34aa2487acb31d93c998ad723e0bbeeabc4b20ea3d5f85d8ec8ad6f0cf3f5&o=",
+   "absoluteUrl": "https://cf.bstatic.com/xdata/images/hotel/max200/923092804.jpg?k=54e34aa2487acb31d93c998ad723e0bbeeabc4b20ea3d5f85d8ec8ad6f0cf3f5&o="
+  }
+ },
+ "AccommodationPhoto:923092780": {
+  "__typename": "AccommodationPhoto",
+  "id": 923092780,
+  "altText": "a bedroom with a bed and a mirror at Olympic Paddington Budget Hotel - across Allianz Stadium in Sydney",
+  "photoType": "ROOM",
+  "resource({\"size\":\"square60\"})": {
+   "__typename": "PhotoResource",
+   "relativeUrl": "/xdata/images/hotel/square60/923092780.jpg?k=adeecf85b7644b7f057efe097949187716074d6a1c75849c6cb743b8c652451f&o=",
+   "absoluteUrl": "https://cf.bstatic.com/xdata/images/hotel/square60/923092780.jpg?k=adeecf85b7644b7f057efe097949187716074d6a1c75849c6cb743b8c652451f&o="
+  },
+  "resource({\"size\":\"max300\"})": {
+   "__typename": "PhotoResource",
+   "relativeUrl": "/xdata/images/hotel/max300/923092780.jpg?k=adeecf85b7644b7f057efe097949187716074d6a1c75849c6cb743b8c652451f&o=",
+   "absoluteUrl": "https://cf.bstatic.com/xdata/images/hotel/max300/923092780.jpg?k=adeecf85b7644b7f057efe097949187716074d6a1c75849c6cb743b8c652451f&o="
+  },
+  "resource({\"size\":\"max500\"})": {
+   "__typename": "PhotoResource",
+   "relativeUrl": "/xdata/images/hotel/max500/923092780.jpg?k=adeecf85b7644b7f057efe097949187716074d6a1c75849c6cb743b8c652451f&o=",
+   "absoluteUrl": "https://cf.bstatic.com/xdata/images/hotel/max500/923092780.jpg?k=adeecf85b7644b7f057efe097949187716074d6a1c75849c6cb743b8c652451f&o="
+  },
+  "resource({\"size\":\"max1024x768\"})": {
+   "__typename": "PhotoResource",
+   "relativeUrl": "/xdata/images/hotel/max1024x768/923092780.jpg?k=adeecf85b7644b7f057efe097949187716074d6a1c75849c6cb743b8c652451f&o=",
+   "absoluteUrl": "https://cf.bstatic.com/xdata/images/hotel/max1024x768/923092780.jpg?k=adeecf85b7644b7f057efe097949187716074d6a1c75849c6cb743b8c652451f&o="
+  },
+  "resource({\"size\":\"max200\"})": {
+   "__typename": "PhotoResource",
+   "relativeUrl": "/xdata/images/hotel/max200/923092780.jpg?k=adeecf85b7644b7f057efe097949187716074d6a1c75849c6cb743b8c652451f&o=",
+   "absoluteUrl": "https://cf.bstatic.com/xdata/images/hotel/max200/923092780.jpg?k=adeecf85b7644b7f057efe097949187716074d6a1c75849c6cb743b8c652451f&o="
+  }
  }
 }

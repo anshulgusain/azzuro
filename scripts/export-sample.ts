@@ -6,7 +6,7 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { openDb } from '../src/db/database.js';
-import { queryReviews } from '../src/db/repository.js';
+import { propertyPhotos, queryReviews } from '../src/db/repository.js';
 import { getProperty } from '../src/shared/properties.js';
 import { SAMPLE_CSV, SAMPLE_JSON, type SampleFile } from './sample-format.js';
 
@@ -33,6 +33,7 @@ const out: SampleFile = {
   exportedAt: new Date().toISOString(),
   note: 'Public Booking.com guest reviews collected by `npm run collect`. Guest names removed.',
   snapshots,
+  hotelPhotos: Object.fromEntries(propertyPhotos(db)),
   reviews: reviews.map((r) => ({
     id: r.id,
     propertyId: r.propertyId,

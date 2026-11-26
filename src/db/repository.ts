@@ -6,6 +6,7 @@ import { CLASSIFIER_VERSION, SENTIMENT_BANDS, sentimentForScore, type Sentiment,
 import type {
   CategoryScore,
   CollectionRun,
+  HotelPhoto,
   HealthResponse,
   Review,
   ReviewSource,
@@ -304,6 +305,7 @@ export interface SnapshotInput {
   bookingHotelId?: number | null;
   bookingName?: string | null;
   address?: string | null;
+  photos?: HotelPhoto[];
 }
 
 export function addSnapshot(db: Db, s: SnapshotInput): void {
@@ -317,6 +319,16 @@ export function addSnapshot(db: Db, s: SnapshotInput): void {
        address = COALESCE(?, address)
      WHERE id = ?`,
   ).run(s.bookingHotelId ?? null, s.bookingName ?? null, s.address ?? null, s.propertyId);
+  if (s.photos?.length) setPropertyPhotos(db, s.propertyId, s.photos);
+}
+
+export function setPropertyPhotos(db: Db, propertyId: string, photos: HotelPhoto[]): void {
+  db.prepare('UPDATE properties SET photos_json = ? WHERE id = ?').run(JSON.stringify(photos), propertyId);
+}
+
+export function propertyPhotos(db: Db): Map<string, HotelPhoto[]> {
+  const rows = db.prepare('SELECT id, photos_json FROM properties').all() as Array<{ id: string; photos_json: string }>;
+  return new Map(rows.map((r) => [r.id, JSON.parse(r.photos_json) as HotelPhoto[]]));
 }
 
 export interface LatestSnapshot {

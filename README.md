@@ -11,7 +11,13 @@ Collects public Booking.com guest reviews for four Azzurro Hotels properties and
 
 ![Summary page](docs/screenshots/summary.png)
 
-The dashboard is built for front-desk and operations staff rather than analysts: one big rating with a plain word ("Very good", "Poor"), short key points, a card per hotel, "Top complaints" next to "What guests love", and reviews split into *Liked* and *Didn't like*. Every page has a **Get latest reviews** button. Colour is always paired with an icon or a word.
+<details><summary>Dark mode</summary>
+
+![Summary page in dark mode](docs/screenshots/summary-dark.png)
+
+</details>
+
+The dashboard is built for front-desk and operations staff rather than analysts: one big rating with a plain word ("Very good", "Poor"), short key points, a card per hotel with its photo, "Top complaints" next to "What guests love", and reviews split into *Liked* and *Didn't like*. It is white by default with a **Dark mode** button (the choice is remembered), uses an azure-blue palette (*azzurro* is Italian for sky blue) with an orange **Get latest reviews** button, and shows each hotel's own photos in a banner at the top. Colour is always paired with an icon or a word.
 
 > **Read this first: data coverage.** Booking.com recognises automated browsers and refuses them the full review list. What it does serve is each property's overall score, its category scores (with a benchmark range for similar Sydney properties) and the ~10 reviews it features on each page. Those featured reviews are picked from high scores, so the collected sample (40 reviews) averages about 9/10 while Booking.com's real scores are 6.2–6.6. The dashboard says this on every page and leans on the category scores, which are built from all ~9,300 reviews. See [Known limitations](#known-limitations-and-assumptions) and [Recommended next steps](#recommended-next-steps).
 
@@ -109,6 +115,7 @@ data/sample/   collected sample data (JSON + CSV)
 |---|---|
 | `reviews` | One row per Booking.com review. Primary key is Booking's own review key (`bkg:<reviewUrl>`), so the same review seen in many runs is stored once. Stores score, title, liked/disliked text, language, review date (UTC and Sydney calendar date), stay month, nights, room, traveller type, country, hotel reply, a content hash, and the text-quality flag. |
 | `review_topics` | Topic tags per review: topic, `complaint`/`praise`, and the exact words that triggered it. |
+| `properties` | The four hotels, Booking.com's hotel id and address, and links to the hotel's gallery photos (`photos_json`). Photos are linked, never copied into the repository. |
 | `property_snapshots` | Booking.com's overall score, review count and category scores at every run, so score movement is kept over time. |
 | `collection_runs`, `collection_run_items` | Every run, per property: status, attempts, new/updated/rejected counts, full-list outcome and errors. Shown on the *Data status* page (link at the bottom of the dashboard). |
 
@@ -170,6 +177,7 @@ Data-quality rules, each based on cases in the real reviews:
 - **Keyword limits:** misses sarcasm, typos and unusual wording, and can tag a word used in another sense (e.g. "after I checked out" tagged as check-in). Every tag shows its trigger words so these are visible.
 - **English only** for topic tags.
 - **Dates:** the review date is when the guest submitted the review, not when they stayed; weeks are Monday–Sunday in Australia/Sydney.
+- **Hotel photos** are shown straight from Booking.com's image server using the links on each hotel's page (the hotels' own photos). They need an internet connection; offline, the banner falls back to plain blue and cards show a hotel icon.
 - **Assumptions:** "negative" means a score of 5 or below; property names follow the brief, not Booking's listing titles; guest first names are stored locally (as Booking shows them publicly) but removed from the committed sample.
 
 ## Recommended next steps

@@ -32,6 +32,15 @@ describe('parsePropertyPage', () => {
     expect(first.roomType).toContain('Double Room');
   });
 
+  it('reads the hotel photos, main photo first, as https links', () => {
+    expect(page.photos.length).toBe(3);
+    expect(page.photos[0].alt).toContain('Olympic Paddington');
+    for (const p of page.photos) {
+      expect(p.url).toMatch(/^https:\/\/cf\.bstatic\.com\/.*max1024x768/);
+      expect(p.thumbUrl).toMatch(/max500/);
+    }
+  });
+
   it("notices Booking.com's bot flag", () => {
     expect(page.flaggedAsRobot).toBe(true);
   });
