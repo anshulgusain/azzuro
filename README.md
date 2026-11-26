@@ -78,7 +78,7 @@ flowchart LR
   end
   V --> DB[("SQLite<br/>data/azzurro.db")]
   C["classify.ts<br/>topic tagging"] --> DB
-  DB --> API["Hono API<br/>/api/summary, trends, reviews, health"]
+  DB --> API["Express API<br/>/api/summary, trends, reviews, health"]
   M["metrics.ts<br/>KPIs, trends, insight sentences"] --> API
   API --> UI["React dashboard"]
   UI -- "Refresh data" --> Collector
@@ -93,7 +93,7 @@ src/
   collector/   browser.ts (Playwright), extract.ts (parsing), run.ts (orchestration, retries, lock), cli.ts
   db/          schema.ts (migrations), repository.ts (upserts, queries, health), reviewInput.ts (validation)
   insights/    classify.ts (topic tagging), metrics.ts (KPIs, trends, insight sentences)
-  server/      index.ts (Hono API + static dashboard), service.ts (assembles responses)
+  server/      index.ts (Express API + static dashboard), service.ts (assembles responses)
   shared/      properties.ts, topics.ts (taxonomy), dates.ts (Sydney weeks), types.ts (API contract)
   web/         React dashboard (Vite)
 scripts/       seed, export-sample, reclassify

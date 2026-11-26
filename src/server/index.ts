@@ -1,10 +1,7 @@
 import { spawn } from 'node:child_process';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync } from 'node:fs';
 import { join, resolve } from 'node:path';
-import { serve } from '@hono/node-server';
-import { serveStatic } from '@hono/node-server/serve-static';
-import { Hono } from 'hono';
-import { HTTPException } from 'hono/http-exception';
+import express, { type NextFunction, type Request, type Response } from 'express';
 import { isCollectionRunning } from '../collector/run.js';
 import { openDb } from '../db/database.js';
 import { healthReport, queryReviews } from '../db/repository.js';
@@ -15,16 +12,30 @@ import type { MetaResponse, ReviewsResponse, TopicPolarity } from '../shared/typ
 import { buildSummary, buildTrends, dataBounds } from './service.js';
 
 const db = openDb();
-const app = new Hono();
+const app = express();
+app.disable('x-powered-by');
 
 const PRESETS: PeriodPreset[] = ['this_week', 'last_week', 'last_4_weeks', 'last_3_months', 'last_12_months', 'custom'];
 
+/** A request error with a message that is safe to show to the user. */
+class BadRequest extends Error {}
+
 function badRequest(message: string): never {
-  throw new HTTPException(400, { message });
+  throw new BadRequest(message);
+}
+
+type Query = (key: string) => string | undefined;
+
+/** Reads one query-string value, ignoring repeated or nested parameters. */
+function queryOf(req: Request): Query {
+  return (key) => {
+    const v = req.query[key];
+    return typeof v === 'string' ? v : undefined;
+  };
 }
 
 /** Reads ?period=&from=&to= into a resolved period, validating every value. */
-function periodFromQuery(q: (k: string) => string | undefined) {
+function periodFromQuery(q: Query) {
   const today = todayLocal();
   const preset = (q('period') ?? 'this_week') as PeriodPreset;
   if (!PRESETS.includes(preset)) badRequest(`Unknown period "${preset}"`);
@@ -36,14 +47,14 @@ function periodFromQuery(q: (k: string) => string | undefined) {
   return { today, period: resolvePeriod('custom', today, { from, to }) };
 }
 
-function propertyFromQuery(q: (k: string) => string | undefined): string | null {
+function propertyFromQuery(q: Query): string | null {
   const id = q('property');
   if (!id || id === 'all') return null;
   if (!getProperty(id)) badRequest(`Unknown property "${id}"`);
   return id;
 }
 
-app.get('/api/meta', (c) => {
+app.get('/api/meta', (_req, res) => {
   const range = dataBounds(db);
   const body: MetaResponse = {
     properties: PROPERTIES.map((p) => ({ id: p.id, name: p.name, bookingUrl: bookingUrl(p).replace('.en-gb.html', '.html') })),
@@ -53,23 +64,23 @@ app.get('/api/meta', (c) => {
     totalReviews: range.total,
     classifierVersion: CLASSIFIER_VERSION,
   };
-  return c.json(body);
+  res.json(body);
 });
 
-app.get('/api/summary', (c) => {
-  const q = (k: string) => c.req.query(k);
+app.get('/api/summary', (req, res) => {
+  const q = queryOf(req);
   const { today, period } = periodFromQuery(q);
-  return c.json(buildSummary(db, period, propertyFromQuery(q), today));
+  res.json(buildSummary(db, period, propertyFromQuery(q), today));
 });
 
-app.get('/api/trends', (c) => {
-  const q = (k: string) => c.req.query(k);
+app.get('/api/trends', (req, res) => {
+  const q = queryOf(req);
   const { period } = periodFromQuery(q);
-  return c.json(buildTrends(db, period, propertyFromQuery(q)));
+  res.json(buildTrends(db, period, propertyFromQuery(q)));
 });
 
-app.get('/api/reviews', (c) => {
-  const q = (k: string) => c.req.query(k);
+app.get('/api/reviews', (req, res) => {
+  const q = queryOf(req);
   const { period } = periodFromQuery(q);
   const sentiment = q('sentiment') as Sentiment | undefined;
   if (sentiment && !['positive', 'neutral', 'negative'].includes(sentiment)) badRequest('Unknown sentiment');
@@ -96,41 +107,56 @@ app.get('/api/reviews', (c) => {
     offset: (page - 1) * pageSize,
   });
   const body: ReviewsResponse = { total, page, pageSize, reviews };
-  return c.json(body);
+  res.json(body);
 });
 
-app.get('/api/health', (c) => c.json(healthReport(db, isCollectionRunning())));
+app.get('/api/health', (_req, res) => {
+  res.json(healthReport(db, isCollectionRunning()));
+});
 
 /** Starts a collection in the background so staff can refresh data from the dashboard. */
-app.post('/api/collect', (c) => {
-  if (isCollectionRunning()) return c.json({ started: false, message: 'A collection is already running.' }, 409);
+app.post('/api/collect', (_req, res) => {
+  if (isCollectionRunning()) {
+    res.status(409).json({ started: false, message: 'A collection is already running.' });
+    return;
+  }
   const child = spawn(process.execPath, ['--import', 'tsx', resolve('src/collector/cli.ts'), '--trigger', 'dashboard'], {
     cwd: process.cwd(),
     detached: true,
     stdio: 'ignore',
   });
   child.unref();
-  return c.json({ started: true, message: 'Collection started. It usually takes 1–2 minutes.' }, 202);
+  res.status(202).json({ started: true, message: 'Collection started. It usually takes 1–2 minutes.' });
 });
 
-app.onError((err, c) => {
-  if (err instanceof HTTPException) return c.json({ error: err.message }, err.status);
-  console.error(err);
-  return c.json({ error: 'Something went wrong on the server.' }, 500);
+// Unknown API paths get a JSON 404 rather than the dashboard page.
+app.use('/api', (_req, res) => {
+  res.status(404).json({ error: 'Not found' });
 });
 
 // Production: serve the built dashboard and fall back to index.html for client routes.
 const webDist = resolve('dist/web');
-if (existsSync(join(webDist, 'index.html'))) {
-  app.use('/*', serveStatic({ root: './dist/web' }));
-  const indexHtml = readFileSync(join(webDist, 'index.html'), 'utf8');
-  app.get('*', (c) => (c.req.path.startsWith('/api/') ? c.notFound() : c.html(indexHtml)));
+const hasDashboard = existsSync(join(webDist, 'index.html'));
+if (hasDashboard) {
+  app.use(express.static(webDist));
+  app.get('/{*path}', (_req, res) => {
+    res.sendFile(join(webDist, 'index.html'));
+  });
 }
 
+// Express 5 passes errors thrown in route handlers here.
+app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
+  if (err instanceof BadRequest) {
+    res.status(400).json({ error: err.message });
+    return;
+  }
+  console.error(err);
+  res.status(500).json({ error: 'Something went wrong on the server.' });
+});
+
 const port = Number(process.env.PORT ?? 8787);
-const server = serve({ fetch: app.fetch, port }, () => {
-  const ui = existsSync(join(webDist, 'index.html'));
-  console.log(ui ? `Dashboard: http://localhost:${port}` : `API on http://localhost:${port} (run the Vite dev server for the dashboard)`);
+const server = app.listen(port, () => {
+  console.log(hasDashboard ? `Dashboard: http://localhost:${port}` : `API on http://localhost:${port} (run the Vite dev server for the dashboard)`);
 });
 server.on('error', (err: NodeJS.ErrnoException) => {
   if (err.code === 'EADDRINUSE') {
