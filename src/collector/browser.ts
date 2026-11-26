@@ -88,6 +88,19 @@ async function loadPropertyPage(page: Page, property: PropertyConfig): Promise<P
     throw new CollectError('structure', 'Page loaded but the embedded review data block was not found (page structure changed?)');
   }
 
+  // The page streams several data blocks; the first to appear is not always the
+  // one holding the property. Wait until the property's own data has arrived.
+  await page
+    .waitForFunction(
+      (sel) =>
+        Array.from(document.querySelectorAll(sel)).some(
+          (s) => s.textContent?.includes('"ROOT_QUERY"') && s.textContent.includes('"PropertyReview"'),
+        ),
+      APOLLO_SELECTOR,
+      { timeout: 20_000, polling: 250 },
+    )
+    .catch(() => log('warn', '  property data block not complete after 20s; parsing what is there'));
+
   const blocks = await page.locator(APOLLO_SELECTOR).allTextContents();
   const caches = blocks.map((b) => {
     try {

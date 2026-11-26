@@ -1,0 +1,423 @@
+{
+ "ROOT_QUERY": {
+  "__typename": "Query",
+  "breadcrumbs({\"input\":{\"displayLanguage\":\"en-gb\",\"isRobot\":true,\"sessionId\":\"dcb8ef2746321833d5e48c2d5384da2e\",\"url\":\"/hotel/au/olympic-paddington.en-gb.html\",\"visitorCountryCode\":\"gb\"}})": {
+   "__typename": "Breadcrumbs"
+  },
+  "reviewsFrontend({\"input\":{\"customerType\":[\"COUPLE\"],\"hotelId\":16211291,\"questions\":[\"hotel_location\"],\"searchFeatures\":{\"destId\":0,\"travelPurpose\":\"TP_LEISURE\"},\"ufi\":-1603135}})": {
+   "__typename": "ReviewsFrontendResult",
+   "reviewsCount": 129,
+   "topicFilters": [
+    {
+     "__ref": "TopicFilter:249"
+    },
+    {
+     "__ref": "TopicFilter:270"
+    },
+    {
+     "__ref": "TopicFilter:276"
+    },
+    {
+     "__ref": "TopicFilter:255"
+    },
+    {
+     "__ref": "TopicFilter:263"
+    },
+    {
+     "__ref": "TopicFilter:252"
+    },
+    {
+     "__ref": "TopicFilter:254"
+    },
+    {
+     "__ref": "TopicFilter:275"
+    },
+    {
+     "__ref": "TopicFilter:280"
+    },
+    {
+     "__ref": "TopicFilter:298"
+    },
+    {
+     "__ref": "TopicFilter:260"
+    },
+    {
+     "__ref": "TopicFilter:261"
+    },
+    {
+     "__ref": "TopicFilter:289"
+    },
+    {
+     "__ref": "TopicFilter:245"
+    },
+    {
+     "__ref": "TopicFilter:267"
+    },
+    {
+     "__ref": "TopicFilter:281"
+    },
+    {
+     "__ref": "TopicFilter:246"
+    },
+    {
+     "__ref": "TopicFilter:258"
+    },
+    {
+     "__ref": "TopicFilter:285"
+    },
+    {
+     "__ref": "TopicFilter:251"
+    },
+    {
+     "__ref": "TopicFilter:259"
+    },
+    {
+     "__ref": "TopicFilter:262"
+    },
+    {
+     "__ref": "TopicFilter:269"
+    },
+    {
+     "__ref": "TopicFilter:284"
+    },
+    {
+     "__ref": "TopicFilter:286"
+    },
+    {
+     "__ref": "TopicFilter:287"
+    },
+    {
+     "__ref": "TopicFilter:290"
+    },
+    {
+     "__ref": "TopicFilter:291"
+    },
+    {
+     "__ref": "TopicFilter:293"
+    },
+    {
+     "__ref": "TopicFilter:296"
+    },
+    {
+     "__ref": "TopicFilter:297"
+    }
+   ],
+   "ratingScores": [
+    {
+     "__typename": "RatingScore",
+     "name": "hotel_staff",
+     "translation": "Staff",
+     "value": 7.683624267578125,
+     "count": 122,
+     "ufiScoresAverage": {
+      "__typename": "UfiScoreAverage",
+      "ufiScoreLowerBound": 7.539924621582031,
+      "ufiScoreHigherBound": 9.586174964904785
+     }
+    },
+    {
+     "__typename": "RatingScore",
+     "name": "hotel_services",
+     "translation": "Facilities",
+     "value": 6.3235015869140625,
+     "count": 123,
+     "ufiScoresAverage": {
+      "__typename": "UfiScoreAverage",
+      "ufiScoreLowerBound": 7.144024848937988,
+      "ufiScoreHigherBound": 9.362774848937988
+     }
+    },
+    {
+     "__typename": "RatingScore",
+     "name": "hotel_clean",
+     "translation": "Cleanliness",
+     "value": 6.847253799438477,
+     "count": 123,
+     "ufiScoresAverage": {
+      "__typename": "UfiScoreAverage",
+      "ufiScoreLowerBound": 7.369149684906006,
+      "ufiScoreHigherBound": 9.51657485961914
+     }
+    },
+    {
+     "__typename": "RatingScore",
+     "name": "hotel_comfort",
+     "translation": "Comfort",
+     "value": 7.015068531036377,
+     "count": 123,
+     "ufiScoresAverage": {
+      "__typename": "UfiScoreAverage",
+      "ufiScoreLowerBound": 7.385624885559082,
+      "ufiScoreHigherBound": 9.520524978637695
+     }
+    },
+    {
+     "__typename": "RatingScore",
+     "name": "hotel_value",
+     "translation": "Value for money",
+     "value": 6.938474655151367,
+     "count": 122,
+     "ufiScoresAverage": {
+      "__typename": "UfiScoreAverage",
+      "ufiScoreLowerBound": 7.18179988861084,
+      "ufiScoreHigherBound": 9.166549682617188
+     }
+    },
+    {
+     "__typename": "RatingScore",
+     "name": "hotel_location",
+     "translation": "Location",
+     "value": 8.302423477172852,
+     "count": 121,
+     "ufiScoresAverage": {
+      "__typename": "UfiScoreAverage",
+      "ufiScoreLowerBound": 8.333650588989258,
+      "ufiScoreHigherBound": 9.906400680541992
+     }
+    },
+    {
+     "__typename": "RatingScore",
+     "name": "hotel_free_wifi",
+     "translation": "Free WiFi",
+     "value": 8.333333969116211,
+     "count": 3,
+     "ufiScoresAverage": {
+      "__typename": "UfiScoreAverage",
+      "ufiScoreLowerBound": 7.675299644470215,
+      "ufiScoreHigherBound": 9.074174880981445
+     }
+    }
+   ],
+   "reviewScores": [
+    {
+     "__typename": "ReviewScore",
+     "name": "hotel_location",
+     "translation": "Location",
+     "value": 7.7486443519592285,
+     "count": 42,
+     "customerType": "COUPLE"
+    }
+   ],
+   "reviewSummary": {
+    "__typename": "ReviewSummary",
+    "language": "en",
+    "numReviews": 46,
+    "summary": "",
+    "pros": [
+     {
+      "__typename": "ReviewSummaryBullet",
+      "description": "<b>Location</b>: Close to Allianz Stadium and convenient for accessing public transport.",
+      "numberOfMentions": 28,
+      "sentiment": "POSITIVE"
+     },
+     {
+      "__typename": "ReviewSummaryBullet",
+      "description": "<b>Room Cleanliness</b>: Tidy, well-maintained, and spotless upon arrival.",
+      "numberOfMentions": 15,
+      "sentiment": "POSITIVE"
+     },
+     {
+      "__typename": "ReviewSummaryBullet",
+      "description": "<b>Staff</b>: Friendly and accommodating team provide helpful communication and a welcoming atmosphere.",
+      "numberOfMentions": 15,
+      "sentiment": "POSITIVE"
+     }
+    ],
+    "cons": [
+     {
+      "__typename": "ReviewSummaryBullet",
+      "description": "<b>Shared Bathrooms</b>: Unclean floors, mouldy tiles, and strong sewerage smells.",
+      "numberOfMentions": 10,
+      "sentiment": "NEGATIVE"
+     },
+     {
+      "__typename": "ReviewSummaryBullet",
+      "description": "<b>Reception</b>: Smooth virtual check-in process, but the physical lobby lacks on-site personnel.",
+      "numberOfMentions": 7,
+      "sentiment": "MIXED"
+     }
+    ]
+   },
+   "featuredReviews": null
+  }
+ },
+ "PropertyReview:{}": {
+  "__typename": "PropertyReview",
+  "totalScore": {
+   "__typename": "ReviewScoreSummary",
+   "score": 6.4,
+   "reviewsCount": 129,
+   "scoreOutOf10": 6.4
+  },
+  "featuredReviews": [
+   {
+    "__ref": "FeaturedReview:5359877132"
+   },
+   {
+    "__ref": "FeaturedReview:5357323109"
+   },
+   {
+    "__ref": "FeaturedReview:5353822177"
+   }
+  ],
+  "questions": [
+   {
+    "__typename": "ReviewQuestionSegment",
+    "question": {
+     "__typename": "Question",
+     "question": "hotel_wifi",
+     "questionId": 3
+    },
+    "scoreSegment": {
+     "__typename": "ReviewScoreSummary",
+     "score": 8.3,
+     "reviewsCount": 3,
+     "scoreOutOf10": 8.3
+    },
+    "customerType": "SOLO_TRAVELLER"
+   },
+   {
+    "__typename": "ReviewQuestionSegment",
+    "question": {
+     "__typename": "Question",
+     "question": "hotel_paid_wifi",
+     "questionId": 6
+    },
+    "scoreSegment": {
+     "__typename": "ReviewScoreSummary",
+     "score": 5.8,
+     "reviewsCount": 3,
+     "scoreOutOf10": 5.8
+    },
+    "customerType": "SOLO_TRAVELLER"
+   }
+  ]
+ },
+ "BasicPropertyData:16211291": {
+  "__typename": "BasicPropertyData",
+  "id": 16211291,
+  "ufi": -1603135,
+  "location": {
+   "__typename": "Location",
+   "city": "Sydney",
+   "latitude": -33.888711,
+   "longitude": 151.2277268,
+   "countryCode": "au",
+   "isCityCenter": false,
+   "formattedAddress": "308 Moore Park Road, Paddington, 2021 Sydney, Australia",
+   "formattedAddressShort": "308 Moore Park Road, Paddington, Sydney",
+   "isOldTown": false,
+   "oecdType": "URBAN"
+  },
+  "name": "Olympic Paddington Budget Hotel - across Allianz Stadium",
+  "pageName": "olympic-paddington",
+  "externalReviews": null,
+  "reviews": {
+   "__typename": "Reviews",
+   "showScore": null
+  },
+  "accommodationTypeId": 204
+ },
+ "TopicFilter:249": {
+  "__typename": "TopicFilter",
+  "id": 249,
+  "name": "Location",
+  "isSelected": false,
+  "translation": null
+ },
+ "TopicFilter:270": {
+  "__typename": "TopicFilter",
+  "id": 270,
+  "name": "Room",
+  "isSelected": false,
+  "translation": null
+ },
+ "TopicFilter:276": {
+  "__typename": "TopicFilter",
+  "id": 276,
+  "name": "Clean",
+  "isSelected": false,
+  "translation": null
+ },
+ "FeaturedReview:5359877132": {
+  "__typename": "FeaturedReview",
+  "id": 5359877132,
+  "userId": 0,
+  "isAnonymous": false,
+  "averageScore": 10,
+  "completed": 1793789051,
+  "guestCountryCode": "au",
+  "guestName": "Guest A",
+  "positiveText": "this place has become my second home in the kast few months, the staff  are great and its value for money.",
+  "negativeText": "",
+  "language": "en",
+  "customerType": "SOLO_TRAVELLER",
+  "purposeType": "BUSINESS",
+  "title": "great!",
+  "reviewUrl": "3bc2026db2abf8ef",
+  "userAvatarUrl": null,
+  "isTranslatable": false,
+  "hasHideCountryFlag": false,
+  "roomType": {
+   "__ref": "RoomTranslation:1621129103"
+  }
+ },
+ "RoomTranslation:1621129103": {
+  "__typename": "RoomTranslation",
+  "id": "1621129103",
+  "name": "Standard Double Room with Private External Bathroom",
+  "description": "The double room offers a carpeted floor, as well as a shared bathroom boasting a shower. The unit has 1 bed."
+ },
+ "FeaturedReview:5357323109": {
+  "__typename": "FeaturedReview",
+  "id": 5357323109,
+  "userId": 0,
+  "isAnonymous": false,
+  "averageScore": 9,
+  "completed": 1793083971,
+  "guestCountryCode": "au",
+  "guestName": "Guest B",
+  "positiveText": "Their customer service is excellent and they are very helpful in working with me regarding room reservations and changes.",
+  "negativeText": "Friendly stuff",
+  "language": "en",
+  "customerType": "YOUNG_COUPLE",
+  "purposeType": "LEISURE",
+  "title": "",
+  "reviewUrl": "57f13c305a47531c",
+  "userAvatarUrl": null,
+  "isTranslatable": false,
+  "hasHideCountryFlag": false,
+  "roomType": {
+   "__ref": "RoomTranslation:1621129103"
+  }
+ },
+ "FeaturedReview:5353822177": {
+  "__typename": "FeaturedReview",
+  "id": 5353822177,
+  "userId": 0,
+  "isAnonymous": false,
+  "averageScore": 8,
+  "completed": 1792120800,
+  "guestCountryCode": "au",
+  "guestName": "Guest C",
+  "positiveText": "We came for the World Cup game, the location was perfect just across the road",
+  "negativeText": "The pub and music was pretty loud after the game which was to be expected",
+  "language": "en",
+  "customerType": "YOUNG_COUPLE",
+  "purposeType": "LEISURE",
+  "title": "",
+  "reviewUrl": "3100352cc46c4a25",
+  "userAvatarUrl": null,
+  "isTranslatable": false,
+  "hasHideCountryFlag": false,
+  "roomType": {
+   "__ref": "RoomTranslation:1621129105"
+  }
+ },
+ "RoomTranslation:1621129105": {
+  "__typename": "RoomTranslation",
+  "id": "1621129105",
+  "name": "Standard Double Room (Ensuite)",
+  "description": "The unit offers 1 bed."
+ }
+}

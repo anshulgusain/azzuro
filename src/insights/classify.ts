@@ -58,6 +58,11 @@ export function normalizeText(text: string): string {
     .trim();
 }
 
+/** Drops matches contained in a longer match ("code" inside "door code"). */
+function collapseOverlaps(terms: string[]): string[] {
+  return terms.filter((t) => !terms.some((other) => other !== t && other.length > t.length && other.includes(t)));
+}
+
 /** Returns the topics mentioned in a piece of text and the words that matched. */
 export function findTopics(text: string): Map<TopicId, string[]> {
   const found = new Map<TopicId, string[]>();
@@ -71,7 +76,7 @@ export function findTopics(text: string): Map<TopicId, string[]> {
       re.lastIndex = 0;
       for (const m of haystack.matchAll(re)) hits.add(m[0]);
     }
-    if (hits.size) found.set(topic.id, [...hits]);
+    if (hits.size) found.set(topic.id, collapseOverlaps([...hits]));
   }
   return found;
 }
@@ -82,7 +87,7 @@ const TRIVIAL_DISLIKED = [
   /^no (complaints?|negatives?|issues?|problems?)( at all)?$/,
   /^(all|everything) (was )?(good|great|fine|perfect|excellent|ok|okay)$/,
   /^(can'?t|cannot|could ?n'?t) think of anything$/,
-  /^nothing,? (it was|everything was|all was) (good|great|perfect|excellent|fine)$/,
+  /^nothing[,.!]? (it was|everything was|all was|all) (pretty |really |very |all )?(good|great|perfect|excellent|fine|ok|okay)$/,
   /^not applicable$/,
 ];
 
@@ -97,17 +102,23 @@ export function isTrivialDisliked(text: string): boolean {
 }
 
 const sentimentAnalyzer = new Sentiment();
-const NEGATORS = /\b(not|no|never|nor|but|however|although|though|except|lack\w*|without|wasn'?t|weren'?t|isn'?t|didn'?t|don'?t|doesn'?t|couldn'?t|can'?t|could|should|would|too|bit|only|poor\w*|bad\w*|worse|worst|small|old|noisy|dirty)\b|n't/;
+// Words that signal a complaint, a contrast or a suggestion. Any of them means
+// the "disliked" text is not pure praise, so it stays a complaint.
+const NOT_PURE_PRAISE =
+  /\b(not|no|never|nor|but|however|although|though|except|lack\w*|without|missing|could|should|would|might|may|wish|need\w*|improv\w*|better|more|less|too|bit|only|poor\w*|bad\w*|worse|worst|small|old|loud|nois\w*|dirt\w*|smell\w*|broken|cold|hot|expensive|annoy\w*|issue\w*|problem\w*|trouble)\b|n't/;
+const MAX_MISPLACED_WORDS = 8;
 
 /**
- * True when text in the "disliked" box is actually a compliment: it scores
- * positive on the AFINN lexicon, contains no negative words, and has no
- * negation or contrast ("not", "but", "too", "could be"). Conservative on
- * purpose: when unsure, we keep it as a complaint.
+ * True when text in the "disliked" box is actually a compliment: it is short,
+ * scores positive on the AFINN lexicon, contains no negative words, and has
+ * no negation, contrast, suggestion or complaint vocabulary ("not", "but",
+ * "might be better", "loud"). Conservative on purpose: when unsure, we keep
+ * it as a complaint.
  */
 export function isMisplacedPraise(text: string): boolean {
   const norm = normalizeText(text);
-  if (!norm || NEGATORS.test(norm)) return false;
+  if (!norm || NOT_PURE_PRAISE.test(norm)) return false;
+  if (norm.split(' ').length > MAX_MISPLACED_WORDS) return false;
   const result = sentimentAnalyzer.analyze(norm);
   return result.score > 0 && result.negative.length === 0;
 }

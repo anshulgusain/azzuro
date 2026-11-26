@@ -108,6 +108,15 @@ export interface SummaryResponse {
   properties: PropertySummary[];
   insights: Insight[];
   lastReviewDate: IsoDate | null;
+  /** How much of Booking.com's review base the figures are built on. */
+  coverage: {
+    collected: number;
+    onBooking: number | null;
+    /** True when no review came from the full list, only Booking's (high-rated) featured picks. */
+    featuredOnly: boolean;
+    /** Booking.com's own all-time scores for the properties in scope. */
+    bookingScoreRange: [number, number] | null;
+  };
 }
 
 export interface TrendPoint {

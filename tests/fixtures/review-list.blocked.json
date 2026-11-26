@@ -1,0 +1,18 @@
+{
+ "data": {
+  "reviewListFrontend": {
+   "__typename": "ReviewsFrontendError",
+   "statusCode": 400,
+   "message": "Request not supported"
+  }
+ },
+ "extensions": {
+  "latency_insights": {
+   "ReviewList": {
+    "end_time": 1795672099948,
+    "duration_ms": 16,
+    "start_time": 1795672099932
+   }
+  }
+ }
+}
