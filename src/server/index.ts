@@ -1,5 +1,4 @@
 import { spawn } from 'node:child_process';
-import { timingSafeEqual } from 'node:crypto';
 import { existsSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import express, { type NextFunction, type Request, type Response } from 'express';
@@ -34,41 +33,11 @@ const app = express();
 app.disable('x-powered-by');
 app.set('trust proxy', 1); // behind Render's (or any) proxy, so req.ip is the visitor's address
 
-/** For uptime checks (Render's health check). Deliberately outside the password. */
+/** For uptime checks (Render's health check). */
 app.get('/healthz', (_req, res) => {
   res.json({ ok: true });
 });
 
-/* ---------- Password protection ----------
-   When DASHBOARD_PASSWORD is set, the browser asks for a user name and
-   password before showing anything. Essential on a public address: the chat
-   assistant spends OpenAI credit and "Get latest reviews" starts a browser. */
-const AUTH_USER = process.env.DASHBOARD_USER?.trim() || 'staff';
-const AUTH_PASSWORD = process.env.DASHBOARD_PASSWORD ?? '';
-
-function sameText(a: string, b: string): boolean {
-  const x = Buffer.from(a);
-  const y = Buffer.from(b);
-  return x.length === y.length && timingSafeEqual(x, y);
-}
-
-if (AUTH_PASSWORD) {
-  app.use((req, res, next) => {
-    const [scheme, encoded] = (req.headers.authorization ?? '').split(' ');
-    if (scheme === 'Basic' && encoded) {
-      const decoded = Buffer.from(encoded, 'base64').toString('utf8');
-      const sep = decoded.indexOf(':');
-      if (sep > 0 && sameText(decoded.slice(0, sep), AUTH_USER) && sameText(decoded.slice(sep + 1), AUTH_PASSWORD)) {
-        next();
-        return;
-      }
-    }
-    res.set('WWW-Authenticate', 'Basic realm="Azzurro guest reviews", charset="UTF-8"');
-    res.status(401).send('Please sign in with the staff user name and password.');
-  });
-} else {
-  console.warn('DASHBOARD_PASSWORD is not set: anyone who can reach this address can use the dashboard and the chat assistant.');
-}
 
 const PRESETS: PeriodPreset[] = ['this_week', 'last_week', 'last_4_weeks', 'last_3_months', 'last_12_months', 'custom'];
 

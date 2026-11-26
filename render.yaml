@@ -16,10 +16,6 @@ services:
     envVars:
       - key: REVIEWS_DB
         value: /var/data/azzurro.db
-      - key: DASHBOARD_USER
-        value: staff
-      - key: DASHBOARD_PASSWORD
-        sync: false # you choose it in the Render dashboard; share it with staff
       - key: OPENAI_API_KEY
         sync: false # your OpenAI key, entered in the Render dashboard
       - key: OPENAI_MODEL
