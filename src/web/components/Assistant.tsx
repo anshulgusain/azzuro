@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
+import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
 import { api, type ChatMessage, type ChatView } from '../lib/api';
 import { Icon } from './ui';
 
@@ -28,7 +28,8 @@ function loadSaved(): ChatMessage[] {
  */
 export function Assistant({ view, viewLabel }: { view: ChatView; viewLabel: string }) {
   const [open, setOpen] = useState(false);
-  const [status, setStatus] = useState<{ enabled: boolean; model: string | null } | null>(null);
+  // 'checking' until the server answers; 'unreachable' is a connection problem, not "switched off".
+  const [status, setStatus] = useState<{ enabled: boolean; model: string | null } | 'checking' | 'unreachable'>('checking');
   const [messages, setMessages] = useState<ChatMessage[]>(loadSaved);
   const [draft, setDraft] = useState('');
   const [pending, setPending] = useState(false);
@@ -36,9 +37,21 @@ export function Assistant({ view, viewLabel }: { view: ChatView; viewLabel: stri
   const listRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
-  useEffect(() => {
-    api.assistantStatus().then(setStatus).catch(() => setStatus({ enabled: false, model: null }));
+  const checkStatus = useCallback(() => {
+    setStatus((s) => (typeof s === 'object' ? s : 'checking'));
+    api
+      .assistantStatus()
+      .then(setStatus)
+      .catch(() => setStatus('unreachable'));
   }, []);
+  // Check when the page loads and again every time the panel opens, so a server
+  // restart or a key added later is picked up without reloading the page.
+  useEffect(checkStatus, [checkStatus]);
+  useEffect(() => {
+    if (open) checkStatus();
+  }, [open, checkStatus]);
+  const enabled = typeof status === 'object' && status.enabled;
+  const switchedOff = typeof status === 'object' && !status.enabled;
   useEffect(() => {
     try {
       sessionStorage.setItem(STORAGE_KEY, JSON.stringify(messages.slice(-30)));
@@ -113,7 +126,17 @@ export function Assistant({ view, viewLabel }: { view: ChatView; viewLabel: stri
           </header>
 
           <div className="ask-body" ref={listRef} aria-live="polite">
-            {status && !status.enabled ? (
+            {status === 'unreachable' ? (
+              <div className="ask-off">
+                <p>
+                  <strong>Can't reach the assistant right now.</strong>
+                </p>
+                <p>The dashboard server may be restarting or the connection dropped.</p>
+                <button className="btn" onClick={checkStatus}>
+                  Try again
+                </button>
+              </div>
+            ) : switchedOff ? (
               <div className="ask-off">
                 <p>
                   <strong>The assistant isn't switched on yet.</strong>
@@ -126,7 +149,7 @@ export function Assistant({ view, viewLabel }: { view: ChatView; viewLabel: stri
                 <p>Ask anything about our guest reviews in your own words. For example:</p>
                 <div className="ask-suggestions">
                   {SUGGESTIONS.map((s) => (
-                    <button key={s} className="ask-suggestion" onClick={() => void send(s)} disabled={!status?.enabled}>
+                    <button key={s} className="ask-suggestion" onClick={() => void send(s)} disabled={!enabled}>
                       {s}
                     </button>
                   ))}
@@ -171,13 +194,13 @@ export function Assistant({ view, viewLabel }: { view: ChatView; viewLabel: stri
               rows={2}
               value={draft}
               maxLength={2000}
-              placeholder={status?.enabled === false ? 'Not available yet' : 'Type your question…'}
-              disabled={status?.enabled === false}
+              placeholder={enabled ? 'Type your question…' : status === 'checking' ? 'Connecting…' : 'Not available right now'}
+              disabled={!enabled}
               onChange={(e) => setDraft(e.target.value)}
               onKeyDown={onKeyDown}
               aria-label="Your question"
             />
-            <button className="btn btn-primary" type="submit" disabled={!draft.trim() || pending || status?.enabled === false}>
+            <button className="btn btn-primary" type="submit" disabled={!draft.trim() || pending || !enabled}>
               Send
             </button>
           </form>
