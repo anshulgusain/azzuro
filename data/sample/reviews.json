@@ -1,6 +1,6 @@
 {
   "format": "azzurro-reviews/v1",
-  "exportedAt": "2026-11-26T06:13:08.528Z",
+  "exportedAt": "2026-11-26T06:21:24.190Z",
   "note": "Public Booking.com guest reviews collected by `npm run collect`. Guest names removed.",
   "snapshots": [
     {
@@ -2074,13 +2074,6 @@
           "terms": [
             "fridge",
             "aircon"
-          ]
-        },
-        {
-          "topic": "location",
-          "polarity": "complaint",
-          "terms": [
-            "dodgy"
           ]
         },
         {

@@ -127,7 +127,15 @@ if (existsSync(join(webDist, 'index.html'))) {
   app.get('*', (c) => (c.req.path.startsWith('/api/') ? c.notFound() : c.html(indexHtml)));
 }
 
-const port = Number(process.env.PORT ?? 3000);
-serve({ fetch: app.fetch, port }, () => {
-  console.log(`Review insights API on http://localhost:${port}${existsSync(join(webDist, 'index.html')) ? ' (serving dashboard)' : ''}`);
+const port = Number(process.env.PORT ?? 8787);
+const server = serve({ fetch: app.fetch, port }, () => {
+  const ui = existsSync(join(webDist, 'index.html'));
+  console.log(ui ? `Dashboard: http://localhost:${port}` : `API on http://localhost:${port} (run the Vite dev server for the dashboard)`);
+});
+server.on('error', (err: NodeJS.ErrnoException) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`Port ${port} is already in use. Start on another port, e.g. PORT=8788 npm start`);
+    process.exit(1);
+  }
+  throw err;
 });

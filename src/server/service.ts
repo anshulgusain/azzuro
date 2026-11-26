@@ -1,6 +1,6 @@
 import type { Db } from '../db/database.js';
 import { dataRange, latestSnapshots, queryReviews } from '../db/repository.js';
-import { buildInsights, periodStats, topComplaint, topicStats, weeklyTrend } from '../insights/metrics.js';
+import { benchmarkInsight, buildInsights, periodStats, topComplaint, topicStats, weeklyTrend } from '../insights/metrics.js';
 import { addDays, type IsoDate, type ResolvedPeriod } from '../shared/dates.js';
 import { PROPERTIES, bookingUrl, getProperty } from '../shared/properties.js';
 import type { PropertySummary, SummaryResponse, TrendsResponse } from '../shared/types.js';
@@ -61,6 +61,8 @@ export function buildSummary(db: Db, period: ResolvedPeriod, propertyId: string 
   });
 
   const inScope = properties.filter((p) => !propertyId || p.id === propertyId);
+  const benchmark = benchmarkInsight(inScope);
+  if (benchmark) insights.splice(Math.min(1, insights.length), 0, benchmark);
   const scores = inScope.map((p) => p.bookingScore).filter((s): s is number => s !== null);
   const sources = db
     .prepare(`SELECT source, COUNT(*) AS n FROM reviews ${propertyId ? 'WHERE property_id = ?' : ''} GROUP BY source`)

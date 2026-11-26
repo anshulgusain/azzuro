@@ -113,7 +113,7 @@ export const TOPICS: readonly TopicDef[] = [
       'nightlife', 'neighbourhood', 'neighborhood', 'area', 'suburb', 'beach', 'park', 'harbour', 'harbor',
       'opera house', 'kings cross', 'oxford st*', 'surry hills', 'paddington', 'potts point', 'chinatown',
       'stadium', 'scg', 'allianz', 'moore park', 'centennial park', 'convenient*', 'easy to find',
-      'hard to find', 'dodgy', 'sketchy', 'unsafe',
+      'hard to find', 'dodgy area', 'sketchy area', 'unsafe area', 'rough area', 'felt unsafe', 'felt safe',
     ],
     exclude: ['common area*', 'communal area*', 'shower area', 'kitchen area', 'seating area', 'car park', 'parking'],
   },

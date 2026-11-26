@@ -1,6 +1,6 @@
 import { addDays, startOfWeek, type IsoDate } from '../shared/dates.js';
 import { TOPICS, topicLabel, type TopicId } from '../shared/topics.js';
-import type { Insight, PeriodStats, Review, TopicStat, TrendPoint } from '../shared/types.js';
+import type { CategoryScore, Insight, PeriodStats, Review, TopicStat, TrendPoint } from '../shared/types.js';
 
 /**
  * Pure aggregation functions. They take reviews already filtered by property
@@ -212,4 +212,41 @@ export function buildInsights(ctx: InsightContext): Insight[] {
 export function formatDay(d: IsoDate): string {
   const [y, m, day] = d.split('-').map(Number);
   return new Date(Date.UTC(y, m - 1, day)).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+}
+
+/**
+ * Compares Booking.com's all-time category scores with its range for similar
+ * Sydney properties. Built from every review on Booking.com, so it stays
+ * reliable even when only a few reviews could be collected.
+ */
+export function benchmarkInsight(properties: Array<{ name: string; categories: CategoryScore[] }>): Insight | null {
+  const withData = properties.filter((p) => p.categories.length);
+  if (!withData.length) return null;
+  const below = new Map<string, string[]>();
+  for (const p of withData) {
+    for (const c of p.categories) {
+      if (c.cityLow !== null && c.score < c.cityLow) below.set(c.label, [...(below.get(c.label) ?? []), p.name]);
+    }
+  }
+  if (!below.size) {
+    return { kind: 'benchmark', tone: 'good', text: "Every Booking.com category score is within or above the range for comparable Sydney properties (all-time)." };
+  }
+  const list = (xs: string[]) => (xs.length === 1 ? xs[0] : `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}`);
+  if (withData.length === 1) {
+    return {
+      kind: 'benchmark',
+      tone: 'bad',
+      text: `Booking.com rates ${withData[0].name} below the range for comparable Sydney properties on ${list([...below.keys()].map((k) => k.toLowerCase()))} (all-time score from every review).`,
+    };
+  }
+  const everywhere = [...below].filter(([, names]) => names.length === withData.length).map(([k]) => k.toLowerCase());
+  const some = [...below].filter(([, names]) => names.length < withData.length);
+  const parts: string[] = [];
+  if (everywhere.length) parts.push(`${list(everywhere)} ${everywhere.length === 1 ? 'is' : 'are'} below the Sydney range at all ${withData.length} properties`);
+  if (some.length) parts.push(`${list(some.map(([k]) => k.toLowerCase()))} at some`);
+  return {
+    kind: 'benchmark',
+    tone: 'bad',
+    text: `Booking.com's category scores: ${parts.join('; ')}. These are all-time scores from every review, so they are the most reliable comparison here.`,
+  };
 }

@@ -88,7 +88,7 @@ export interface TopicStat {
 }
 
 export interface Insight {
-  kind: 'rating_change' | 'top_issue' | 'rising_issue' | 'property_watch' | 'praise' | 'low_sample' | 'no_data';
+  kind: 'rating_change' | 'top_issue' | 'rising_issue' | 'property_watch' | 'praise' | 'low_sample' | 'no_data' | 'benchmark';
   tone: 'good' | 'bad' | 'neutral';
   text: string;
   topic?: TopicId;
