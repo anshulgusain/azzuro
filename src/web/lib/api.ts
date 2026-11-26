@@ -27,12 +27,35 @@ const scopeParams = (s: Scope) => ({
   to: s.period === 'custom' ? s.to : undefined,
 });
 
+export interface ChatMessage {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+export interface ChatView {
+  hotel: string | null;
+  period: string | null;
+  from: string | null;
+  to: string | null;
+}
+
 export const api = {
   meta: () => get<MetaResponse>('meta'),
   summary: (s: Scope) => get<SummaryResponse>('summary', scopeParams(s)),
   trends: (s: Scope) => get<TrendsResponse>('trends', scopeParams(s)),
   reviews: (s: Scope, f: Record<string, string | number | undefined>) => get<ReviewsResponse>('reviews', { ...scopeParams(s), ...f }),
   health: () => get<HealthResponse>('health'),
+  assistantStatus: () => get<{ enabled: boolean; model: string | null }>('assistant'),
+  chat: async (messages: ChatMessage[], view: ChatView): Promise<{ answer: string; toolsUsed: string[] }> => {
+    const res = await fetch('/api/assistant/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages, view }),
+    });
+    const body = (await res.json().catch(() => null)) as { answer?: string; toolsUsed?: string[]; error?: string } | null;
+    if (!res.ok || !body?.answer) throw new ApiError(body?.error ?? `The assistant returned an error (${res.status}).`);
+    return { answer: body.answer, toolsUsed: body.toolsUsed ?? [] };
+  },
   collect: async (): Promise<{ started: boolean; message: string }> => {
     const res = await fetch('/api/collect', { method: 'POST' });
     return res.json();

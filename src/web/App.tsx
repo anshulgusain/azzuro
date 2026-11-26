@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { PERIOD_LABELS, type PeriodPreset } from '../shared/dates';
+import { Assistant } from './components/Assistant';
 import { DataStatus } from './components/DataStatus';
 import { HeroBanner } from './components/HeroBanner';
 import { LimitedDataNote } from './components/LimitedDataNote';
@@ -214,6 +215,18 @@ export function App() {
             <Summary summary={summary} scope={scope} scopeKey={scopeKey} onHotel={(id) => setState({ property: id })} onOpenReviews={openReviews} />
           )}
         </main>
+
+        <Assistant
+          view={{
+            hotel: state.property === 'all' ? null : state.property,
+            period: state.period,
+            from: state.period === 'custom' ? state.from || null : null,
+            to: state.period === 'custom' ? state.to || null : null,
+          }}
+          viewLabel={`${hotels.find((h) => h.id === state.property)?.name ?? 'All hotels'} · ${
+            state.period === 'custom' && summary.data ? fmtRange(summary.data.period.current.from, summary.data.period.current.to) : PERIOD_LABELS[state.period as PeriodPreset] ?? ''
+          }`}
+        />
 
         <footer className="footer">
           <span>Weeks run Monday to Sunday, Sydney time.</span>

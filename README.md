@@ -51,7 +51,7 @@ If port 8787 is busy: `PORT=8788 npm start`.
 | `npm run seed` | Load `data/sample/reviews.json` into the local database (safe to repeat) |
 | `npm run export-sample` | Write the database to `data/sample/reviews.json` and `.csv` (guest names removed) |
 | `npm run reclassify` | Re-tag every stored review after editing the topic word lists |
-| `npm test` | Unit tests (57) |
+| `npm test` | Unit tests (67) |
 | `npm run typecheck` | TypeScript check |
 
 ### Collector options
@@ -98,6 +98,7 @@ flowchart LR
 
 ```
 src/
+  assistant/   OpenAI chat agent: agent.ts (Responses API loop), tools.ts (read-only tools), openai.ts (config, errors)
   collector/   browser.ts (Playwright), extract.ts (parsing), run.ts (orchestration, retries, lock), cli.ts
   db/          schema.ts (migrations), repository.ts (upserts, queries, health), reviewInput.ts (validation)
   insights/    classify.ts (topic tagging), metrics.ts (KPIs, trends, insight sentences)
@@ -169,6 +170,34 @@ Data-quality rules, each based on cases in the real reviews:
 
 ---
 
+## Chat assistant ("Ask a question")
+
+Staff can click **Ask a question** (bottom right) and ask things in their own words, such as "What are guests complaining about at Potts Point this month?" or "Show me recent reviews that mention noise". Answers come from OpenAI, grounded in the same data as the dashboard.
+
+**Turning it on**
+
+```bash
+cp .env.example .env      # then put your key in OPENAI_API_KEY=...
+npm start                 # restart so the key is picked up
+```
+
+`.env` is git-ignored; never commit a key. Without a key the dashboard works as normal and the chat panel says the assistant isn't switched on yet. `OPENAI_MODEL` defaults to `gpt-5.6-terra`; `gpt-5.6-luna` is cheaper. Any model that supports function calling on the Responses API works.
+
+**How it works** (`src/assistant/`)
+
+- Uses OpenAI's **Responses API** with **function calling**. The model can call five **read-only** tools: `get_overview`, `search_reviews`, `get_weekly_trend`, `get_booking_scores` and `get_data_status`. They reuse the dashboard's own queries and metrics, so the chat and the dashboard always agree.
+- The model never writes database queries and cannot change data or start a collection. Tool arguments are validated with strict JSON schemas, and bad arguments come back as an error the model can correct.
+- The instructions tell it to answer briefly in plain English, always give counts, flag small samples and the featured-reviews limitation, and treat review text as data, not instructions.
+- The page sends what the person is looking at (hotel and period), so "this week" and "this hotel" mean what is on screen. The conversation is kept in the browser; the server stores nothing.
+- Safeguards: at most 6 model steps per question, the last 12 messages and 2,000 characters per message, and 30 questions per person per 10 minutes. OpenAI errors (bad key, no credit, timeouts) are shown as plain messages.
+
+**Privacy and cost**
+
+- Review text is sent to OpenAI, but guest names are not. OpenAI's API data policies apply.
+- A typical question takes 2–3 model calls and roughly 5,000–10,000 input tokens. At `gpt-5.6-terra` list prices that is about 2–3 cents per question.
+
+**Testing:** unit tests cover the tools, the agent loop and the input rules (`tests/assistant.test.ts`). The full path (browser, server, official `openai` SDK) was also exercised against a local stand-in for the Responses endpoint. It has not yet been run against the live OpenAI API, because no key was available during development.
+
 ## Known limitations and assumptions
 
 - **Coverage is small and biased (the big one).** Only Booking.com's featured reviews are available to the collector: about 10 per property, <1% of all reviews, chosen from high scores. Ratings computed from them overstate satisfaction, and "negative reviews" will almost never appear. Complaints within them are still real. The dashboard shows a "Limited data" notice on every page and a coverage table on the *Data status* page.
@@ -183,9 +212,10 @@ Data-quality rules, each based on cases in the real reviews:
 ## Recommended next steps
 
 1. **Use an owner-side source for complete data.** As the property owner, Azzurro has options a scraper doesn't: the Booking.com Extranet's guest review pages, or the review data offered through a channel manager / connectivity partner. The database already has an `import` source type and a single validation contract (`ReviewInput`), so a CSV or API importer is a small addition, and every chart, insight and topic works unchanged with complete data.
-2. **Alerts:** a message to the duty manager when a review scoring 5 or below arrives, with its complaint topics.
-3. **LLM-assisted tagging** for the reviews the keyword rules can't handle (mixed sentences, non-English), checked against a hand-labelled sample before switching.
-4. **Hosting:** run the collector daily on a small server and serve the dashboard behind the company's login.
+2. **Try the assistant with a real OpenAI key** and a handful of typical staff questions before rolling it out.
+3. **Alerts:** a message to the duty manager when a review scoring 5 or below arrives, with its complaint topics.
+4. **LLM-assisted tagging** for the reviews the keyword rules can't handle (mixed sentences, non-English), checked against a hand-labelled sample before switching.
+5. **Hosting:** run the collector daily on a small server and serve the dashboard behind the company's login.
 
 ---
 
@@ -195,7 +225,7 @@ Data-quality rules, each based on cases in the real reviews:
 npm test
 ```
 
-57 tests across the classifier (polarity, trivial answers, misplaced praise, overlaps, non-English), Sydney week maths, the page parser (against a real Booking.com page fixture with names replaced, and the real "blocked" response), de-duplication and merge rules, validation, metrics and the insight sentences.
+67 tests across the classifier (polarity, trivial answers, misplaced praise, overlaps, non-English), Sydney week maths, the page parser (against a real Booking.com page fixture with names replaced, and the real "blocked" response), de-duplication and merge rules, validation, metrics, the insight sentences, and the chat assistant (tool schemas and results, the agent loop against scripted OpenAI responses, history limits).
 
 ## Sample data
 
